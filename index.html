@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chromatic Signature — Discover Your Colors</title>
+    <meta name="description"
+        content="An immersive experience that translates your inner narrative into a personalized color palette.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           CSS CUSTOM PROPERTIES
+           ============================================ */
+        :root {
+            /* Warm Gradient Background */
+            --bg-start: #FF9A56;
+            --bg-mid: #FF6B6B;
+            --bg-end: #C44569;
+
+            /* Glass Panel */
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-blur: 24px;
+            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+
+            /* Text */
+            --text-primary: #1A1A2E;
+            --text-secondary: rgba(26, 26, 46, 0.7);
+            --text-light: #FFFFFF;
+            --text-light-muted: rgba(255, 255, 255, 0.85);
+
+            /* Accent */
+            --accent-glow: #FFD93D;
+            --accent-success: #6BCB77;
+
+            /* Typography */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+            /* Transitions */
+            --transition-smooth: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ============================================
+           RESET & BASE
+           ============================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-family);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+            background-attachment: fixed;
+            color: var(--text-light);
+        }
+
+        /* Particle Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        /* Animated Background Mesh */
+        .background-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .mesh-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .mesh-blob:nth-child(1) {
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, #FFB347 0%, transparent 70%);
+            top: -20%;
+            left: -20%;
+            animation-delay: 0s;
+        }
+
+        .mesh-blob:nth-child(2) {
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, #FF6B6B 0%, transparent 70%);
+            bottom: -10%;
+            right: -15%;
+            animation-delay: -7s;
+        }
+
+        .mesh-blob:nth-child(3) {
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, #C44569 0%, transparent 70%);
+            top: 40%;
+            left: 50%;
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                transform: translate(5%, 5%) scale(1.05);
+            }
+
+            50% {
+                transform: translate(-3%, 8%) scale(0.95);
+            }
+
+            75% {
+                transform: translate(3%, -5%) scale(1.02);
+            }
+        }
+
+        /* ============================================
+           LAYOUT
+           ============================================ */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* ============================================
+           GLASS PANELS
+           ============================================ */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* ============================================
+           SCREENS
+           ============================================ */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 680px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* ============================================
+           WELCOME SCREEN
+           ============================================ */
+        .welcome-screen {
+            text-align: center;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-glow), #FF9A56);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .logo svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--text-primary);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 8px 24px rgba(255, 217, 61, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 12px 32px rgba(255, 217, 61, 0.5);
+            }
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.125rem;
+            font-weight: 300;
+            color: var(--text-light-muted);
+            max-width: 420px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+
+        .start-button {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-light);
+            font-family: var(--font-family);
+            font-size: 1.125rem;
+            font-weight: 500;
+            padding: 1rem 2.5rem;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .start-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .start-button:hover::before {
+            left: 100%;
+        }
+
+        .start-button:active {
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           QUESTION SCREEN
+           ============================================ */
+        .question-screen .glass-panel {
+            padding: 2.5rem;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-label {
+            font-size: 0.875rem;
+            color: var(--text-light-muted);
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-glow), #FF9A56);
+            border-radius: 100px;
+            transition: width var(--transition-smooth);
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .option-card:active {
+            transform: translateX(4px) !important;
+        }
+
+        .option-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-light);
+        }
+
+        .option-text {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Typewriter / Materializing Effect */
+        .typewriter-text {
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .typewriter-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--accent-glow);
+            margin-left: 2px;
+            animation: blink 0.8s ease-in-out infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .option-card {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .option-card.materialized {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .option-card.materialized:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(8px);
+        }
+
+        /* ============================================
+           PROCESSING SCREEN
+           ============================================ */
+        .processing-screen {
+            text-align: center;
+        }
+
+        .processing-screen .glass-panel {
+            padding: 3rem;
+        }
+
+        .processing-animation {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .processing-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--accent-glow);
+            animation: spin 1.5s linear infinite;
+        }
+
+        .processing-ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border-top-color: #FF9A56;
+            animation-duration: 2s;
+            animation-direction: reverse;
+        }
+
+        .processing-ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            border-top-color: #C44569;
+            animation-duration: 2.5s;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .processing-text {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--text-light-muted);
+        }
+
+        /* ============================================
+           RESULT SCREEN
+           ============================================ */
+        .result-screen .glass-panel {
+            padding: 2.5rem;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .result-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-subtitle {
+            font-size: 1rem;
+            color: var(--text-light-muted);
+        }
+
+        .palette-display {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .color-swatch {
+            flex: 1;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 1rem;
+            transition: transform var(--transition-fast);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-swatch:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        .color-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            opacity: 0.8;
+        }
+
+        .color-hex {
+            font-size: 0.875rem;
+            font-weight: 600;
+            font-family: 'SF Mono', 'Monaco', monospace;
+        }
+
+        .narrative-container {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .narrative-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-glow);
+            margin-bottom: 0.75rem;
+        }
+
+        .narrative-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-light-muted);
+        }
+
+        .actions-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 12px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+        }
+
+        .action-button.primary {
+            background: linear-gradient(135deg, var(--accent-glow), #FF9A56);
+            color: var(--text-primary);
+        }
+
+        .action-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.3);
+        }
+
+        .action-button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-light);
+        }
+
+        .action-button.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .action-button.gallery-button {
+            width: 100%;
+            margin-top: 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: var(--text-light-muted);
+            font-size: 0.9rem;
+        }
+
+        .action-button.gallery-button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-light);
+        }
+
+        /* ============================================
+           UNIQUENESS BADGE
+           ============================================ */
+        .uniqueness-badge {
+            margin-top: 2rem;
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 217, 61, 0.1) 0%, rgba(255, 154, 86, 0.1) 100%);
+            border: 1px solid rgba(255, 217, 61, 0.25);
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .uniqueness-icon {
+            display: block;
+            font-size: 1.5rem;
+            color: rgba(255, 217, 61, 0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        .uniqueness-text {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            letter-spacing: 0.03em;
+        }
+
+        .uniqueness-subtext {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-light-muted);
+            margin-top: 0.35rem;
+            font-style: italic;
+        }
+
+        /* ============================================
+           GALLERY SCREEN
+           ============================================ */
+        .gallery-screen {
+            text-align: center;
+            max-width: none !important;
+            width: 100%;
+            padding: 2rem 0;
+        }
+
+        .gallery-header {
+            margin-bottom: 2rem;
+        }
+
+        .gallery-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-subtitle {
+            font-size: 1rem;
+            color: var(--text-light-muted);
+        }
+
+        .gallery-carousel {
+            width: 100%;
+            overflow: hidden;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .gallery-track {
+            display: flex;
+            gap: 2rem;
+            animation: scrollGallery 30s linear infinite;
+            width: max-content;
+        }
+
+        .gallery-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollGallery {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .gallery-card {
+            flex-shrink: 0;
+            width: 280px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all var(--transition-fast);
+        }
+
+        .gallery-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-card-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .gallery-card-colors {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-color-swatch {
+            flex: 1;
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+            font-size: 0.65rem;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-weight: 500;
+        }
+
+        .gallery-card-narrative {
+            font-size: 0.8rem;
+            color: var(--text-light-muted);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .gallery-controls {
+            margin-top: 2rem;
+        }
+
+        /* ============================================
+           TAP CANVAS SCREEN
+           ============================================ */
+        .tap-screen {
+            text-align: center;
+        }
+
+        .tap-screen .glass-panel {
+            padding: 2.5rem;
+        }
+
+        .tap-instruction {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .tap-subtitle {
+            font-size: 1rem;
+            color: var(--text-light-muted);
+            margin-bottom: 2rem;
+        }
+
+        .tap-canvas-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: crosshair;
+            background: linear-gradient(135deg,
+                rgba(255, 154, 86, 0.3) 0%,
+                rgba(255, 107, 107, 0.3) 50%,
+                rgba(196, 69, 105, 0.3) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tap-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .tap-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 217, 61, 0.6) 0%, transparent 70%);
+            pointer-events: none;
+            animation: rippleExpand 0.8s ease-out forwards;
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+            100% {
+                width: 200px;
+                height: 200px;
+                opacity: 0;
+            }
+        }
+
+        /* ============================================
+           SHAPE CHOICE SCREEN
+           ============================================ */
+        .shape-screen {
+            text-align: center;
+        }
+
+        .shape-screen .glass-panel {
+            padding: 2.5rem;
+        }
+
+        .shape-instruction {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .shape-subtitle {
+            font-size: 1rem;
+            color: var(--text-light-muted);
+            margin-bottom: 2rem;
+        }
+
+        .shapes-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .shape-option {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .shape-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .shape-option:active {
+            transform: scale(0.98);
+        }
+
+        .shape-option svg {
+            width: 80%;
+            height: 80%;
+            opacity: 0.9;
+        }
+
+        /* ============================================
+           AUDIO CONTROL
+           ============================================ */
+        .audio-control {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            z-index: 100;
+        }
+
+        .audio-control:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .audio-control svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-light);
+        }
+
+        .audio-control.muted svg {
+            opacity: 0.5;
+        }
+
+        .audio-control .sound-off {
+            display: none;
+        }
+
+        .audio-control.muted .sound-on {
+            display: none;
+        }
+
+        .audio-control.muted .sound-off {
+            display: block;
+        }
+
+        /* ============================================
+           DEBUG PANEL (hidden - uncomment display to show)
+           ============================================ */
+        .debug-panel {
+            display: none;  /* Hidden by default - remove this line to show panel */
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            width: 280px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            z-index: 1000;
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .debug-panel h4 {
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--accent-glow);
+        }
+
+        .debug-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .debug-row label {
+            flex: 1;
+        }
+
+        .debug-row input[type="range"] {
+            width: 120px;
+            margin-left: 0.5rem;
+        }
+
+        .debug-row span {
+            width: 40px;
+            text-align: right;
+            font-family: monospace;
+        }
+
+        .debug-panel .current-values {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: monospace;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 640px) {
+            .app-container {
+                padding: 1.5rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            .question-screen .glass-panel {
+                padding: 1.75rem;
+            }
+
+            .question-text {
+                font-size: 1.25rem;
+            }
+
+            .palette-display {
+                flex-direction: column;
+            }
+
+            .color-swatch {
+                aspect-ratio: 3;
+            }
+
+            .actions-container {
+                flex-direction: column;
+            }
+        }
+
+        /* ============================================
+           REDUCED MOTION
+           ============================================ */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Particle Wake Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Animated Background -->
+    <div class="background-mesh">
+        <div class="mesh-blob"></div>
+        <div class="mesh-blob"></div>
+        <div class="mesh-blob"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- WELCOME SCREEN -->
+        <div id="welcome-screen" class="screen welcome-screen active">
+            <div class="logo-container">
+                <div class="logo">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="welcome-title">Discover Your<br>Chromatic Signature</h1>
+            <p class="welcome-subtitle">Answer five reflective questions to reveal a personalized color palette that
+                captures your inner narrative.</p>
+            <button id="start-btn" class="start-button">Begin Journey</button>
+        </div>
+
+        <!-- QUESTION SCREEN -->
+        <div id="question-screen" class="screen question-screen">
+            <div class="glass-panel">
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span id="question-counter">Question 1 of 5</span>
+                        <span id="progress-percent">20%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill" style="width: 20%"></div>
+                    </div>
+                </div>
+
+                <h2 id="question-text" class="question-text"></h2>
+
+                <div id="options-container" class="options-container"></div>
+            </div>
+        </div>
+
+        <!-- SHAPE CHOICE SCREEN -->
+        <div id="shape-screen" class="screen shape-screen">
+            <div class="glass-panel">
+                <h2 class="shape-instruction">Which form resonates with you?</h2>
+                <p class="shape-subtitle">Trust your intuition, not your analysis</p>
+                <div class="shapes-container">
+                    <div class="shape-option" data-shape="spiral">
+                        <svg viewBox="0 0 100 100" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2">
+                            <path d="M50 50 C50 40, 60 40, 60 50 C60 65, 40 65, 40 50 C40 30, 70 30, 70 50 C70 75, 30 75, 30 50 C30 20, 80 20, 80 50"/>
+                        </svg>
+                    </div>
+                    <div class="shape-option" data-shape="waves">
+                        <svg viewBox="0 0 100 100" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2">
+                            <path d="M10 30 Q25 20, 40 30 T70 30 T100 30"/>
+                            <path d="M10 50 Q25 40, 40 50 T70 50 T100 50"/>
+                            <path d="M10 70 Q25 60, 40 70 T70 70 T100 70"/>
+                        </svg>
+                    </div>
+                    <div class="shape-option" data-shape="crystal">
+                        <svg viewBox="0 0 100 100" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2">
+                            <polygon points="50,10 90,40 75,90 25,90 10,40"/>
+                            <line x1="50" y1="10" x2="50" y2="90"/>
+                            <line x1="10" y1="40" x2="90" y2="40"/>
+                        </svg>
+                    </div>
+                    <div class="shape-option" data-shape="nebula">
+                        <svg viewBox="0 0 100 100" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2">
+                            <circle cx="50" cy="50" r="8"/>
+                            <ellipse cx="50" cy="50" rx="35" ry="15" transform="rotate(30 50 50)"/>
+                            <ellipse cx="50" cy="50" rx="35" ry="15" transform="rotate(-30 50 50)"/>
+                            <ellipse cx="50" cy="50" rx="35" ry="15"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAP CANVAS SCREEN -->
+        <div id="tap-screen" class="screen tap-screen">
+            <div class="glass-panel">
+                <h2 class="tap-instruction">Place your energy</h2>
+                <p class="tap-subtitle">Tap anywhere on the canvas below</p>
+                <div class="tap-canvas-container" id="tap-container">
+                    <canvas class="tap-canvas" id="tap-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROCESSING SCREEN -->
+        <div id="processing-screen" class="screen processing-screen">
+            <div class="glass-panel">
+                <div class="processing-animation">
+                    <div class="processing-ring"></div>
+                    <div class="processing-ring"></div>
+                    <div class="processing-ring"></div>
+                </div>
+                <p class="processing-text">Translating your narrative into color...</p>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="screen result-screen">
+            <div class="glass-panel">
+                <div class="result-header">
+                    <h2 class="result-title" id="palette-name">Your Chromatic Signature</h2>
+                    <p class="result-subtitle">A palette born from your inner narrative</p>
+                </div>
+
+                <div id="palette-display" class="palette-display"></div>
+
+                <div class="narrative-container">
+                    <h3 class="narrative-title">Your Color Story</h3>
+                    <p id="narrative-text" class="narrative-text"></p>
+                </div>
+
+                <div class="actions-container">
+                    <button id="save-btn" class="action-button primary">Save Palette</button>
+                    <button id="restart-btn" class="action-button secondary">Start Over</button>
+                </div>
+                <button id="gallery-btn" class="action-button gallery-button">See Other Color Patterns</button>
+
+                <div class="uniqueness-badge">
+                    <span class="uniqueness-icon">&#10022;</span>
+                    <span class="uniqueness-text">One in 4.7 billion</span>
+                    <span class="uniqueness-subtext">This exact palette has never existed before</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GALLERY SCREEN -->
+        <div id="gallery-screen" class="screen gallery-screen">
+            <div class="gallery-header">
+                <h2 class="gallery-title">Color Pattern Gallery</h2>
+                <p class="gallery-subtitle">Explore chromatic signatures from other journeys</p>
+            </div>
+            <div id="gallery-carousel" class="gallery-carousel">
+                <div class="gallery-track" id="gallery-track"></div>
+            </div>
+            <div class="gallery-controls">
+                <button id="gallery-back-btn" class="action-button secondary">Back to Your Palette</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug Panel (temporary) -->
+    <div id="debug-panel" class="debug-panel">
+        <h4>Audio Settings</h4>
+        <div class="debug-row">
+            <label>Bell Volume</label>
+            <input type="range" id="bell-volume" min="0" max="100" value="50">
+            <span id="bell-volume-val">50</span>
+        </div>
+        <div class="debug-row">
+            <label>Cursor Freq Range</label>
+            <input type="range" id="freq-range" min="100" max="1000" value="400">
+            <span id="freq-range-val">400</span>
+        </div>
+        <div class="debug-row">
+            <label>Cursor Vol Range</label>
+            <input type="range" id="vol-range" min="0" max="50" value="10">
+            <span id="vol-range-val">10</span>
+        </div>
+        <div class="debug-row">
+            <label>Base Frequency</label>
+            <input type="range" id="base-freq" min="100" max="400" value="200">
+            <span id="base-freq-val">200</span>
+        </div>
+        <div class="current-values" id="current-values">
+            Filter: 400 Hz | Vol: 0.25
+        </div>
+    </div>
+
+    <!-- Audio Control -->
+    <button id="audio-control" class="audio-control muted" aria-label="Toggle ambient sound" title="Toggle ambient sound (M)">
+        <svg class="sound-on" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+        </svg>
+        <svg class="sound-off" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </svg>
+    </button>
+
+    <script>
+        // ============================================
+        // QUESTIONS DATA (Philosophical & Abstract)
+        // ============================================
+        const questions = [
+            {
+                id: 'q1',
+                text: "If consciousness had a shape, would yours be expanding or contracting in this moment?",
+                options: [
+                    { value: 'A', text: "Expanding, reaching outward into the unknown", icon: "∞" },
+                    { value: 'B', text: "Contracting, gathering inward toward center", icon: "◉" }
+                ]
+            },
+            {
+                id: 'q2',
+                text: "When you contemplate the nature of time, does it feel more like a river or a sculpture?",
+                options: [
+                    { value: 'A', text: "A river: flowing, never the same twice", icon: "〰" },
+                    { value: 'B', text: "A sculpture: solid, eternal, already complete", icon: "◇" }
+                ]
+            },
+            {
+                id: 'q3',
+                text: "In the space between your thoughts, what quality of silence exists?",
+                options: [
+                    { value: 'A', text: "Electric stillness, pregnant with possibility", icon: "⚡" },
+                    { value: 'B', text: "Velvet darkness, peaceful and absolute", icon: "●" }
+                ]
+            },
+            {
+                id: 'q4',
+                text: "If your deepest truth could be seen, would it appear as light or shadow?",
+                options: [
+                    { value: 'A', text: "Light: illuminating, warm, radiating outward", icon: "☀" },
+                    { value: 'B', text: "Shadow: mysterious, cool, holding depth", icon: "☾" }
+                ]
+            },
+            {
+                id: 'q5',
+                text: "When you imagine the texture of your soul, is it more like fire or water?",
+                options: [
+                    { value: 'A', text: "Fire: transforming, rising, consuming space", icon: "🔥" },
+                    { value: 'B', text: "Water: adapting, flowing, finding stillness", icon: "💧" }
+                ]
+            }
+        ];
+
+        // ============================================
+        // PROCEDURAL NAME GENERATION
+        // ============================================
+        const nameComponents = {
+            // Based on warmth (hue)
+            warmAdjectives: ['Radiant', 'Golden', 'Ember', 'Solar', 'Amber', 'Burning', 'Sunset', 'Coral'],
+            coolAdjectives: ['Lunar', 'Twilight', 'Misty', 'Crystalline', 'Azure', 'Phantom', 'Nocturnal', 'Glacial'],
+            // Based on saturation (vivid vs muted)
+            vividAdjectives: ['Electric', 'Vivid', 'Blazing', 'Prismatic', 'Luminous', 'Iridescent'],
+            mutedAdjectives: ['Soft', 'Whispered', 'Veiled', 'Gentle', 'Muted', 'Ethereal'],
+            // Based on lightness (bright vs deep)
+            brightAdjectives: ['Ascending', 'Floating', 'Soaring', 'Rising', 'Infinite'],
+            deepAdjectives: ['Grounded', 'Rooted', 'Ancient', 'Profound', 'Eternal'],
+            // Nouns based on energy pattern
+            energyNouns: ['Momentum', 'Pulse', 'Resonance', 'Frequency', 'Vibration', 'Rhythm'],
+            stillnessNouns: ['Stillness', 'Meditation', 'Reverie', 'Contemplation', 'Silence', 'Echo'],
+            // Nouns based on element
+            fireNouns: ['Flame', 'Ignition', 'Spark', 'Blaze', 'Aurora'],
+            waterNouns: ['Current', 'Tide', 'Depths', 'Flow', 'Mist']
+        };
+
+        function generatePaletteName(hue, saturation, lightness, answers) {
+            // Select adjective based on hue (warm vs cool)
+            const isWarm = (hue >= 0 && hue < 60) || (hue >= 300 && hue <= 360);
+            const tempAdj = isWarm
+                ? nameComponents.warmAdjectives[Math.floor(Math.random() * nameComponents.warmAdjectives.length)]
+                : nameComponents.coolAdjectives[Math.floor(Math.random() * nameComponents.coolAdjectives.length)];
+
+            // Select modifier based on saturation
+            const isVivid = saturation > 50;
+            const satAdj = isVivid
+                ? nameComponents.vividAdjectives[Math.floor(Math.random() * nameComponents.vividAdjectives.length)]
+                : nameComponents.mutedAdjectives[Math.floor(Math.random() * nameComponents.mutedAdjectives.length)];
+
+            // Select noun based on answers pattern
+            const isFire = answers.q5 === 'A';
+            const isEnergy = answers.q1 === 'A';
+
+            let nouns;
+            if (isFire) {
+                nouns = isEnergy ? nameComponents.energyNouns : nameComponents.fireNouns;
+            } else {
+                nouns = isEnergy ? nameComponents.stillnessNouns : nameComponents.waterNouns;
+            }
+            const noun = nouns[Math.floor(Math.random() * nouns.length)];
+
+            // Combine: 50% chance of two adjectives, 50% chance of one
+            if (Math.random() > 0.5) {
+                return `${tempAdj} ${noun}`;
+            } else {
+                return `${satAdj} ${tempAdj} ${noun}`;
+            }
+        }
+
+        // ============================================
+        // DYNAMIC NARRATIVE GENERATION
+        // ============================================
+        function generateNarrative(palette, answers) {
+            const { primary } = palette;
+            const isExpanding = answers.q1 === 'A';
+            const isFlowing = answers.q2 === 'A';
+            const isElectric = answers.q3 === 'A';
+            const isLight = answers.q4 === 'A';
+            const isFire = answers.q5 === 'A';
+
+            // Build narrative from components
+            const openings = [
+                `Your chromatic signature emerges from the intersection of ${isExpanding ? 'expansion' : 'introspection'} and ${isFlowing ? 'constant motion' : 'eternal form'}.`,
+                `These colors were born in the space where ${isLight ? 'illumination meets warmth' : 'shadow embraces mystery'}.`,
+                `Your palette speaks the language of ${isFire ? 'transformation and ascension' : 'adaptation and depth'}.`
+            ];
+
+            const middles = [
+                `The ${isElectric ? 'electric stillness' : 'velvet darkness'} of your inner world manifests as subtle gradations of hue and light.`,
+                `Each color carries the weight of your contemplations, ${isExpanding ? 'reaching outward toward infinite possibility' : 'gathering inward toward essential truth'}.`,
+                `There is a ${isFire ? 'rising, consuming energy' : 'flowing, adapting wisdom'} that pulses through these tones.`
+            ];
+
+            const closings = [
+                'This is not merely a palette. It is a visual meditation on your unique way of being in the world.',
+                'These colors are yours alone, generated from the particular frequency of your consciousness.',
+                'Let these hues remind you of the depth and beauty that exists within your inner landscape.'
+            ];
+
+            // Select one from each, with some randomness
+            const opening = openings[Math.floor(Math.random() * openings.length)];
+            const middle = middles[Math.floor(Math.random() * middles.length)];
+            const closing = closings[Math.floor(Math.random() * closings.length)];
+
+            return `${opening} ${middle} ${closing}`;
+        }
+
+        // ============================================
+        // APP STATE
+        // ============================================
+        let currentQuestion = 0;
+        let answers = {};
+        let audioContext = null;
+        let audioSource = null;
+        let audioGain = null;
+        let isAudioPlaying = false;
+
+        // ============================================
+        // ENTROPY COLLECTION (Hidden Randomization)
+        // ============================================
+        let entropyData = {
+            sessionStart: Date.now(),
+            questionTimings: [],      // ms spent on each question
+            answerTimestamps: [],     // precise timestamp of each answer
+            shapeChoice: null,        // which abstract shape was chosen
+            shapeClickTime: null,     // when they clicked the shape
+            tapPosition: { x: 0.5, y: 0.5 },  // normalized tap position
+            tapTimestamp: null        // when they tapped
+        };
+        let questionStartTime = null;
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        const screens = {
+            welcome: document.getElementById('welcome-screen'),
+            question: document.getElementById('question-screen'),
+            shape: document.getElementById('shape-screen'),
+            tap: document.getElementById('tap-screen'),
+            processing: document.getElementById('processing-screen'),
+            result: document.getElementById('result-screen'),
+            gallery: document.getElementById('gallery-screen')
+        };
+
+        const startBtn = document.getElementById('start-btn');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressFill = document.getElementById('progress-fill');
+        const paletteDisplay = document.getElementById('palette-display');
+        const paletteName = document.getElementById('palette-name');
+        const narrativeText = document.getElementById('narrative-text');
+        const saveBtn = document.getElementById('save-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const audioControl = document.getElementById('audio-control');
+        const galleryBtn = document.getElementById('gallery-btn');
+        const galleryBackBtn = document.getElementById('gallery-back-btn');
+        const galleryTrack = document.getElementById('gallery-track');
+        const tapContainer = document.getElementById('tap-container');
+        const tapCanvas = document.getElementById('tap-canvas');
+        const shapeOptions = document.querySelectorAll('.shape-option');
+
+        // ============================================
+        // AUDIO FUNCTIONS - Brown Noise Generator
+        // ============================================
+        // Brown noise (also called red noise) has more energy at lower frequencies,
+        // creating a deeper, smoother sound compared to white noise.
+        // It's generated by integrating white noise, giving a -6dB/octave rolloff.
+
+        let brownNoiseNode = null;
+        let lowPassFilter = null;  // Store reference for cursor modulation
+        let mouseX = 0.5;  // Normalized 0-1
+        let mouseY = 0.5;  // Normalized 0-1
+        let lastMouseX = 0.5;
+        let lastMouseY = 0.5;
+        let mouseSpeed = 0;  // Current movement speed (0-1 normalized)
+        let smoothedSpeed = 0;  // Smoothed for audio
+
+        // Configurable audio parameters (adjustable via debug panel)
+        let audioSettings = {
+            bellVolume: 0.5,      // 0-1 (will be multiplied)
+            freqRange: 400,       // Hz range for cursor modulation
+            volRange: 0.1,        // Volume range for cursor modulation
+            baseFreq: 200         // Base filter frequency
+        };
+
+        // ============================================
+        // PARTICLE WAKE SYSTEM
+        // ============================================
+        const particleCanvas = document.getElementById('particle-canvas');
+        const particleCtx = particleCanvas.getContext('2d');
+        let particles = [];
+
+        // Resize canvas to window
+        function resizeParticleCanvas() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        resizeParticleCanvas();
+        window.addEventListener('resize', resizeParticleCanvas);
+
+        // Particle class - refined, smaller particles
+        class Particle {
+            constructor(x, y, speed) {
+                this.x = x;
+                this.y = y;
+                // Particles drift outward from cursor path - gentler movement
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 0.2 + Math.random() * 0.6;
+                this.vx = Math.cos(angle) * velocity;
+                this.vy = Math.sin(angle) * velocity;
+                // Smaller, more refined sizes
+                this.size = 1 + speed * 2 + Math.random() * 1.5;
+                this.originalSize = this.size;
+                // Life and fade - slightly faster decay for more ethereal feel
+                this.life = 1;
+                this.decay = 0.02 + Math.random() * 0.015;
+                // Color - warm golden tones, slightly more subtle
+                this.hue = 35 + Math.random() * 25;  // Gold to soft orange
+                this.saturation = 70 + Math.random() * 20;
+                this.lightness = 65 + Math.random() * 20;
+                this.alpha = 0.4 + Math.random() * 0.3;
+            }
+
+            update() {
+                // Apply velocity with drag
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                // Add slight upward drift (like bubbles)
+                this.vy -= 0.02;
+                // Fade out
+                this.life -= this.decay;
+                this.size = this.originalSize * this.life;
+            }
+
+            draw(ctx) {
+                if (this.life <= 0) return;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${this.alpha * this.life})`;
+                ctx.fill();
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        // Spawn particles at cursor
+        function spawnParticles(x, y, speed) {
+            // More particles when moving faster, but keep it refined
+            const count = Math.floor(1 + speed * 3);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(x, y, speed));
+            }
+            // Limit total particles for performance
+            if (particles.length > 150) {
+                particles = particles.slice(-100);
+            }
+        }
+
+        // Animation loop for particles
+        function animateParticles() {
+            particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+
+            // Update and draw particles
+            particles = particles.filter(p => !p.isDead());
+            particles.forEach(p => {
+                p.update();
+                p.draw(particleCtx);
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        async function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                // Create brown noise using AudioWorklet or ScriptProcessor fallback
+                const bufferSize = 4096;
+
+                // Create a noise processor node
+                // Brown noise is created by accumulating white noise samples
+                const noiseProcessor = audioContext.createScriptProcessor(bufferSize, 1, 1);
+
+                let lastOut = 0.0;
+                noiseProcessor.onaudioprocess = function(e) {
+                    const output = e.outputBuffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        // Generate white noise
+                        const white = Math.random() * 2 - 1;
+                        // Brown noise: integrate white noise with leaky integrator
+                        // The 0.02 factor controls the "brownness" (lower = deeper)
+                        lastOut = (lastOut + (0.02 * white)) / 1.02;
+                        output[i] = lastOut * 3.5; // Amplify since integration reduces amplitude
+                    }
+                };
+
+                // Create a gentle low-pass filter to smooth the sound further
+                // This filter frequency will be modulated by cursor position
+                lowPassFilter = audioContext.createBiquadFilter();
+                lowPassFilter.type = 'lowpass';
+                lowPassFilter.frequency.setValueAtTime(400, audioContext.currentTime);
+                lowPassFilter.Q.setValueAtTime(0.5, audioContext.currentTime);
+
+                // Create a subtle high-pass to remove any DC offset rumble
+                const highPassFilter = audioContext.createBiquadFilter();
+                highPassFilter.type = 'highpass';
+                highPassFilter.frequency.setValueAtTime(20, audioContext.currentTime);
+                highPassFilter.Q.setValueAtTime(0.5, audioContext.currentTime);
+
+                // Master gain for volume control with smooth fades
+                audioGain = audioContext.createGain();
+                audioGain.gain.setValueAtTime(0, audioContext.currentTime);
+
+                // Connect the chain: noise -> lowpass -> highpass -> gain -> output
+                noiseProcessor.connect(lowPassFilter);
+                lowPassFilter.connect(highPassFilter);
+                highPassFilter.connect(audioGain);
+                audioGain.connect(audioContext.destination);
+
+                brownNoiseNode = noiseProcessor;
+
+            } catch (error) {
+                console.log('Audio initialization failed:', error);
+            }
+        }
+
+        // Meditation bell sound with reverb/echo for button clicks
+        function playClickSound() {
+            if (!audioContext || !isAudioPlaying) return;
+
+            // Create multiple oscillators for richer bell tone
+            const fundamental = 528;  // Hz - C5, a pleasant bell frequency
+            const harmonics = [1, 2, 2.4, 3, 4.2, 5.4];  // Bell-like harmonic series
+            const harmonicGains = [1, 0.6, 0.4, 0.25, 0.2, 0.15];
+
+            // Master gain for this bell instance
+            const bellMaster = audioContext.createGain();
+            const volume = audioSettings.bellVolume;
+            bellMaster.gain.setValueAtTime(volume * 0.8, audioContext.currentTime);
+            bellMaster.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 3);
+
+            // Create convolver for reverb effect
+            const convolver = audioContext.createConvolver();
+            const reverbTime = 2.5;
+            const sampleRate = audioContext.sampleRate;
+            const reverbLength = sampleRate * reverbTime;
+            const impulse = audioContext.createBuffer(2, reverbLength, sampleRate);
+
+            // Generate impulse response for reverb (longer, more spacious)
+            for (let channel = 0; channel < 2; channel++) {
+                const channelData = impulse.getChannelData(channel);
+                for (let i = 0; i < reverbLength; i++) {
+                    // Exponential decay with some randomness
+                    channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLength, 2);
+                }
+            }
+            convolver.buffer = impulse;
+
+            // Dry/wet mix - more wet for spacious reverb
+            const dryGain = audioContext.createGain();
+            const wetGain = audioContext.createGain();
+            dryGain.gain.setValueAtTime(0.4, audioContext.currentTime);
+            wetGain.gain.setValueAtTime(0.6, audioContext.currentTime);
+
+            // Create each harmonic
+            harmonics.forEach((harmonic, i) => {
+                const osc = audioContext.createOscillator();
+                const oscGain = audioContext.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(fundamental * harmonic, audioContext.currentTime);
+                // Slight pitch bend for natural bell decay
+                osc.frequency.exponentialRampToValueAtTime(fundamental * harmonic * 0.995, audioContext.currentTime + 2);
+
+                // Each harmonic has its own envelope
+                oscGain.gain.setValueAtTime(0, audioContext.currentTime);
+                oscGain.gain.linearRampToValueAtTime(harmonicGains[i] * 0.3, audioContext.currentTime + 0.002);
+                oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 2 + (i * 0.1));
+
+                osc.connect(oscGain);
+                oscGain.connect(bellMaster);
+
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 3);
+            });
+
+            // Connect bell to dry and wet paths
+            bellMaster.connect(dryGain);
+            bellMaster.connect(convolver);
+            convolver.connect(wetGain);
+            dryGain.connect(audioContext.destination);
+            wetGain.connect(audioContext.destination);
+        }
+
+        // Update audio parameters based on cursor MOVEMENT SPEED
+        function updateAudioFromCursor(pixelX, pixelY) {
+            // Calculate movement speed
+            const dx = mouseX - lastMouseX;
+            const dy = mouseY - lastMouseY;
+            const rawSpeed = Math.sqrt(dx * dx + dy * dy);
+
+            // Normalize speed (0-1 range, clamped)
+            // ~0.05 normalized distance per frame is "fast" movement
+            mouseSpeed = Math.min(1, rawSpeed / 0.05);
+
+            // Smooth the speed for audio (prevents jarring changes)
+            smoothedSpeed = smoothedSpeed * 0.85 + mouseSpeed * 0.15;
+
+            // Store for next frame
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+
+            // Spawn particles based on speed
+            if (mouseSpeed > 0.05) {
+                spawnParticles(pixelX, pixelY, mouseSpeed);
+            }
+
+            if (!lowPassFilter || !audioContext || !isAudioPlaying) return;
+
+            // Map movement SPEED to filter frequency
+            // Slow/still = deep/warm sound, Fast = brighter/more active
+            const targetFreq = audioSettings.baseFreq + (smoothedSpeed * audioSettings.freqRange);
+
+            // Map movement SPEED to volume
+            // Still = quieter, Moving = louder
+            const baseVol = 0.15;
+            const targetVol = baseVol + (smoothedSpeed * audioSettings.volRange);
+
+            // Smooth transitions
+            lowPassFilter.frequency.linearRampToValueAtTime(targetFreq, audioContext.currentTime + 0.1);
+
+            if (audioGain && isAudioPlaying) {
+                audioGain.gain.linearRampToValueAtTime(targetVol, audioContext.currentTime + 0.1);
+            }
+
+            // Update debug display
+            const currentValuesEl = document.getElementById('current-values');
+            if (currentValuesEl) {
+                currentValuesEl.textContent = `Speed: ${(smoothedSpeed * 100).toFixed(0)}% | Filter: ${Math.round(targetFreq)} Hz | Vol: ${targetVol.toFixed(2)}`;
+            }
+        }
+
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX / window.innerWidth;
+            mouseY = e.clientY / window.innerHeight;
+            updateAudioFromCursor(e.clientX, e.clientY);
+        });
+
+        // Debug panel controls
+        function initDebugPanel() {
+            const bellVolumeSlider = document.getElementById('bell-volume');
+            const freqRangeSlider = document.getElementById('freq-range');
+            const volRangeSlider = document.getElementById('vol-range');
+            const baseFreqSlider = document.getElementById('base-freq');
+
+            bellVolumeSlider.addEventListener('input', (e) => {
+                audioSettings.bellVolume = e.target.value / 100;
+                document.getElementById('bell-volume-val').textContent = e.target.value;
+            });
+
+            freqRangeSlider.addEventListener('input', (e) => {
+                audioSettings.freqRange = parseInt(e.target.value);
+                document.getElementById('freq-range-val').textContent = e.target.value;
+            });
+
+            volRangeSlider.addEventListener('input', (e) => {
+                audioSettings.volRange = e.target.value / 100;
+                document.getElementById('vol-range-val').textContent = e.target.value;
+            });
+
+            baseFreqSlider.addEventListener('input', (e) => {
+                audioSettings.baseFreq = parseInt(e.target.value);
+                document.getElementById('base-freq-val').textContent = e.target.value;
+            });
+        }
+
+        // Initialize debug panel when DOM is ready
+        initDebugPanel();
+
+        function fadeInAudio() {
+            if (audioGain && audioContext) {
+                // Cancel any scheduled changes and start from current value
+                audioGain.gain.cancelScheduledValues(audioContext.currentTime);
+                audioGain.gain.setValueAtTime(audioGain.gain.value, audioContext.currentTime);
+                // Gentle fade in over 2 seconds to target volume of 0.25 (brown noise is louder perceptually)
+                audioGain.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 2);
+                isAudioPlaying = true;
+                audioControl.classList.remove('muted');
+            }
+        }
+
+        function fadeOutAudio() {
+            if (audioGain && audioContext) {
+                // Cancel any scheduled changes and start from current value
+                audioGain.gain.cancelScheduledValues(audioContext.currentTime);
+                audioGain.gain.setValueAtTime(audioGain.gain.value, audioContext.currentTime);
+                // Quick but smooth fade out
+                audioGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.5);
+                isAudioPlaying = false;
+                audioControl.classList.add('muted');
+            }
+        }
+
+        function toggleAudio() {
+            if (isAudioPlaying) {
+                fadeOutAudio();
+            } else {
+                if (!audioContext) {
+                    initAudio().then(() => fadeInAudio());
+                } else if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => fadeInAudio());
+                } else {
+                    fadeInAudio();
+                }
+            }
+        }
+
+        // ============================================
+        // NAVIGATION FUNCTIONS
+        // ============================================
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => {
+                screen.classList.remove('active');
+            });
+            screens[screenName].classList.add('active');
+        }
+
+        // Typewriter effect helper
+        function typewriterEffect(element, text, speed = 30) {
+            return new Promise((resolve) => {
+                element.textContent = '';
+                element.classList.add('typewriter-text', 'visible');
+
+                // Add cursor
+                const cursor = document.createElement('span');
+                cursor.className = 'typewriter-cursor';
+                element.appendChild(cursor);
+
+                let i = 0;
+                const textNode = document.createTextNode('');
+                element.insertBefore(textNode, cursor);
+
+                function type() {
+                    if (i < text.length) {
+                        textNode.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        // Remove cursor after typing completes
+                        setTimeout(() => {
+                            cursor.remove();
+                            resolve();
+                        }, 300);
+                    }
+                }
+                type();
+            });
+        }
+
+        // Materialize option cards with stagger
+        function materializeOptions(cards, delay = 150) {
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('materialized');
+                }, index * delay);
+            });
+        }
+
+        async function displayQuestion(index) {
+            const question = questions[index];
+            const progress = ((index + 1) / questions.length) * 100;
+
+            // Start timing this question
+            questionStartTime = Date.now();
+
+            // Update progress immediately
+            questionCounter.textContent = `Question ${index + 1} of ${questions.length}`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+            progressFill.style.width = `${progress}%`;
+
+            // Clear previous content
+            questionText.textContent = '';
+            optionsContainer.innerHTML = '';
+
+            // Typewriter effect for question text
+            await typewriterEffect(questionText, question.text, 25);
+
+            // Create option cards (hidden initially)
+            const cards = [];
+            question.options.forEach(option => {
+                const card = document.createElement('div');
+                card.className = 'option-card';
+
+                // Create option content with typewriter spans
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'option-icon';
+                iconDiv.textContent = option.icon;
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'option-text';
+                textDiv.textContent = option.text;
+
+                card.appendChild(iconDiv);
+                card.appendChild(textDiv);
+                card.addEventListener('click', () => selectAnswer(question.id, option.value));
+                optionsContainer.appendChild(card);
+                cards.push(card);
+            });
+
+            // Materialize options with staggered animation
+            setTimeout(() => {
+                materializeOptions(cards, 200);
+            }, 100);
+        }
+
+        function selectAnswer(questionId, value) {
+            // Record timing entropy
+            const now = Date.now();
+            if (questionStartTime) {
+                entropyData.questionTimings.push(now - questionStartTime);
+            }
+            entropyData.answerTimestamps.push(now);
+
+            answers[questionId] = value;
+
+            // Play soft ding sound on selection
+            playClickSound();
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                // Add slight delay for visual feedback
+                setTimeout(() => displayQuestion(currentQuestion), 200);
+            } else {
+                // After questions, go to shape choice
+                showShapeScreen();
+            }
+        }
+
+        function showShapeScreen() {
+            showScreen('shape');
+        }
+
+        function selectShape(shape) {
+            entropyData.shapeChoice = shape;
+            entropyData.shapeClickTime = Date.now();
+            playClickSound();
+
+            // Go to tap screen
+            setTimeout(() => showTapScreen(), 300);
+        }
+
+        function showTapScreen() {
+            showScreen('tap');
+
+            // Set up tap canvas
+            const rect = tapContainer.getBoundingClientRect();
+            tapCanvas.width = rect.width;
+            tapCanvas.height = rect.height;
+
+            // Draw ambient particles on canvas
+            const ctx = tapCanvas.getContext('2d');
+            drawTapCanvasAmbient(ctx);
+        }
+
+        function drawTapCanvasAmbient(ctx) {
+            // Draw subtle gradient dots
+            for (let i = 0; i < 50; i++) {
+                const x = Math.random() * tapCanvas.width;
+                const y = Math.random() * tapCanvas.height;
+                const radius = 1 + Math.random() * 3;
+                const alpha = 0.1 + Math.random() * 0.2;
+
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.fill();
+            }
+        }
+
+        function handleTapCanvas(e) {
+            const rect = tapContainer.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            entropyData.tapPosition = { x, y };
+            entropyData.tapTimestamp = Date.now();
+
+            // Visual feedback - ripple effect
+            const ripple = document.createElement('div');
+            ripple.className = 'tap-ripple';
+            ripple.style.left = `${e.clientX - rect.left - 100}px`;
+            ripple.style.top = `${e.clientY - rect.top - 100}px`;
+            tapContainer.appendChild(ripple);
+
+            // Draw tap point on canvas
+            const ctx = tapCanvas.getContext('2d');
+            ctx.beginPath();
+            ctx.arc(x * tapCanvas.width, y * tapCanvas.height, 8, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 217, 61, 0.8)';
+            ctx.fill();
+
+            playClickSound();
+
+            // Remove ripple after animation
+            setTimeout(() => ripple.remove(), 800);
+
+            // Proceed to processing
+            setTimeout(() => showProcessingScreen(), 600);
+        }
+
+        function showProcessingScreen() {
+            showScreen('processing');
+
+            // Simulate processing time for dramatic effect
+            setTimeout(() => {
+                const palette = generatePalette(answers);
+                displayResult(palette);
+            }, 3500);
+        }
+
+        // ============================================
+        // INFINITE PALETTE GENERATION
+        // ============================================
+        function generatePalette(answers) {
+            // Build comprehensive entropy seed from all collected data
+            const timingSum = entropyData.questionTimings.reduce((a, b) => a + b, 0);
+            const timestampEntropy = entropyData.answerTimestamps.reduce((a, b) => a + (b % 10000), 0);
+            const tapEntropy = (entropyData.tapPosition.x * 1000) + (entropyData.tapPosition.y * 7777);
+            const shapeValue = { spiral: 1, waves: 2, crystal: 3, nebula: 4 }[entropyData.shapeChoice] || 1;
+            const sessionDuration = Date.now() - entropyData.sessionStart;
+
+            // Combine all entropy sources into a master seed
+            const seed = timingSum + timestampEntropy + tapEntropy + (shapeValue * 1000) + sessionDuration + Math.random() * 1000;
+
+            const pseudoRandom = (offset = 0) => {
+                const x = Math.sin(seed + offset) * 10000;
+                return x - Math.floor(x);
+            };
+
+            // Base values influenced by answers with continuous variation
+            let hue = 30;  // Start warm
+            let saturation = 50;
+            let lightness = 65;
+
+            // Apply tap position influence (major randomization factor)
+            // X position affects hue rotation (0-360 degree range)
+            hue += entropyData.tapPosition.x * 120;
+            // Y position affects saturation (-15 to +15)
+            saturation += (entropyData.tapPosition.y - 0.5) * 30;
+
+            // Apply shape choice influence
+            if (entropyData.shapeChoice === 'spiral') {
+                hue += 15; // Warmer, dynamic
+                saturation += 8;
+            } else if (entropyData.shapeChoice === 'waves') {
+                hue += 180; // Cooler, flowing
+                lightness += 5;
+            } else if (entropyData.shapeChoice === 'crystal') {
+                saturation -= 10; // More muted, structured
+                lightness += 8;
+            } else if (entropyData.shapeChoice === 'nebula') {
+                hue += 270; // Purple/cosmic range
+                saturation += 5;
+            }
+
+            // Apply timing influence (faster = more saturated, slower = more muted)
+            const avgTiming = timingSum / Math.max(1, entropyData.questionTimings.length);
+            const timingFactor = Math.min(1, avgTiming / 10000); // Normalize to 0-1 over 10 seconds
+            saturation += (0.5 - timingFactor) * 15; // Fast answers = higher saturation
+
+            // Q1: Consciousness shape → Hue range + saturation
+            // Expanding = broader hue range, higher saturation
+            if (answers.q1 === 'A') {
+                hue += pseudoRandom(1) * 60;  // Shift toward orange/red
+                saturation += 10 + pseudoRandom(2) * 15;
+            } else {
+                hue += 180 + pseudoRandom(1) * 60;  // Shift toward blue/purple
+                saturation -= 5 + pseudoRandom(2) * 10;
+            }
+
+            // Q2: Time perception → Lightness dynamics
+            // River = variable lightness, Sculpture = stable lightness
+            if (answers.q2 === 'A') {
+                lightness += (pseudoRandom(3) - 0.5) * 20;
+            } else {
+                lightness += 5;  // Slightly brighter, more stable
+            }
+
+            // Q3: Silence quality → Saturation + hue micro-shift
+            // Electric = higher contrast, Velvet = softer tones
+            if (answers.q3 === 'A') {
+                saturation += 8 + pseudoRandom(4) * 10;
+                hue += pseudoRandom(5) * 15;
+            } else {
+                saturation -= 5;
+                lightness -= 8 + pseudoRandom(4) * 5;
+            }
+
+            // Q4: Truth as light/shadow → Primary hue direction
+            // Light = warm shift, Shadow = cool shift
+            if (answers.q4 === 'A') {
+                hue = (hue + 330) % 360;  // Warm rotation
+                lightness += 10 + pseudoRandom(6) * 8;
+            } else {
+                hue = (hue + 200) % 360;  // Cool rotation
+                lightness -= 5 + pseudoRandom(6) * 8;
+            }
+
+            // Q5: Soul texture (fire/water) → Harmony type & accent intensity
+            const harmonyType = answers.q5 === 'A' ? 'triadic' : 'analogous';
+            if (answers.q5 === 'A') {
+                saturation += pseudoRandom(7) * 12;
+            } else {
+                saturation -= pseudoRandom(7) * 8;
+            }
+
+            // Normalize hue and clamp other values
+            hue = ((hue % 360) + 360) % 360;
+            saturation = Math.max(30, Math.min(80, saturation));
+            lightness = Math.max(45, Math.min(85, lightness));
+
+            // Add final micro-variations using all entropy for true uniqueness
+            hue += (pseudoRandom(8) - 0.5) * 20 + (entropyData.tapPosition.x - 0.5) * 15;
+            saturation += (pseudoRandom(9) - 0.5) * 10 + (entropyData.tapPosition.y - 0.5) * 8;
+            lightness += (pseudoRandom(10) - 0.5) * 8;
+
+            // Re-clamp after micro-variations
+            hue = ((hue % 360) + 360) % 360;
+            saturation = Math.max(25, Math.min(85, saturation));
+            lightness = Math.max(40, Math.min(88, lightness));
+
+            // Generate primary color
+            const primary = { h: hue, s: saturation, l: lightness };
+            let secondary, accent;
+
+            // Generate harmonious palette based on type
+            if (harmonyType === 'triadic') {
+                // Triadic: 120° apart with variations
+                secondary = {
+                    h: (hue + 120 + (pseudoRandom(11) - 0.5) * 20 + entropyData.tapPosition.x * 10) % 360,
+                    s: Math.max(25, saturation - 10 + pseudoRandom(12) * 8),
+                    l: Math.min(90, lightness + 8 + pseudoRandom(13) * 6)
+                };
+                accent = {
+                    h: (hue + 240 + (pseudoRandom(14) - 0.5) * 20 + entropyData.tapPosition.y * 10) % 360,
+                    s: Math.min(80, saturation + 5 + pseudoRandom(15) * 10),
+                    l: Math.max(40, lightness - 12 + pseudoRandom(16) * 8)
+                };
+            } else {
+                // Analogous: 25-35° apart for harmony
+                const spread = 25 + pseudoRandom(11) * 15 + entropyData.tapPosition.x * 10;
+                secondary = {
+                    h: (hue + spread) % 360,
+                    s: Math.max(20, saturation - 12 + pseudoRandom(12) * 6),
+                    l: Math.min(92, lightness + 10 + pseudoRandom(13) * 8)
+                };
+                accent = {
+                    h: (hue - spread + 360) % 360,
+                    s: Math.min(75, saturation + 8 + pseudoRandom(14) * 6),
+                    l: Math.max(42, lightness - 10 + pseudoRandom(15) * 6)
+                };
+            }
+
+            // Generate unique palette name
+            const name = generatePaletteName(hue, saturation, lightness, answers);
+
+            // Generate unique palette ID (for sharing)
+            const paletteId = btoa(JSON.stringify({
+                h: Math.round(hue),
+                s: Math.round(saturation),
+                l: Math.round(lightness),
+                t: harmonyType[0]
+            })).slice(0, 8);
+
+            // Build the palette object
+            const palette = {
+                primary,
+                secondary,
+                accent,
+                name,
+                harmonyType,
+                paletteId
+            };
+
+            // Generate dynamic narrative
+            palette.narrative = generateNarrative(palette, answers);
+
+            return palette;
+        }
+
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+        }
+
+        function getContrastColor(h, s, l) {
+            return l > 60 ? '#1A1A2E' : '#FFFFFF';
+        }
+
+        // ============================================
+        // PALETTE HISTORY (for uniqueness tracking)
+        // ============================================
+        let paletteHistory = [];
+
+        // Load existing history from localStorage
+        function loadPaletteHistory() {
+            try {
+                const stored = localStorage.getItem('chromaticSignatureHistory');
+                if (stored) {
+                    paletteHistory = JSON.parse(stored);
+                }
+            } catch (e) {
+                console.log('Could not load palette history:', e);
+            }
+        }
+
+        // Save palette to history and download JSON
+        function savePaletteToHistory(palette, colors) {
+            const entry = {
+                id: palette.paletteId,
+                name: palette.name,
+                timestamp: new Date().toISOString(),
+                colors: {
+                    primary: hslToHex(colors[0].h, colors[0].s, colors[0].l),
+                    secondary: hslToHex(colors[1].h, colors[1].s, colors[1].l),
+                    accent: hslToHex(colors[2].h, colors[2].s, colors[2].l)
+                },
+                hsl: {
+                    primary: { h: Math.round(colors[0].h), s: Math.round(colors[0].s), l: Math.round(colors[0].l) },
+                    secondary: { h: Math.round(colors[1].h), s: Math.round(colors[1].s), l: Math.round(colors[1].l) },
+                    accent: { h: Math.round(colors[2].h), s: Math.round(colors[2].s), l: Math.round(colors[2].l) }
+                },
+                harmonyType: palette.harmonyType,
+                narrative: palette.narrative
+            };
+
+            paletteHistory.push(entry);
+
+            // Save to localStorage
+            try {
+                localStorage.setItem('chromaticSignatureHistory', JSON.stringify(paletteHistory));
+            } catch (e) {
+                console.log('Could not save to localStorage:', e);
+            }
+
+            // Auto-download updated JSON
+            downloadPaletteJSON();
+
+            return entry;
+        }
+
+        // Download all palettes as JSON file
+        function downloadPaletteJSON() {
+            const data = {
+                exportDate: new Date().toISOString(),
+                totalPalettes: paletteHistory.length,
+                palettes: paletteHistory
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'chromatic-signatures.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Check if name or colors already exist
+        function isUniquePalette(name, colors) {
+            const primaryHex = hslToHex(colors[0].h, colors[0].s, colors[0].l);
+            const secondaryHex = hslToHex(colors[1].h, colors[1].s, colors[1].l);
+            const accentHex = hslToHex(colors[2].h, colors[2].s, colors[2].l);
+
+            for (const entry of paletteHistory) {
+                // Check name
+                if (entry.name === name) {
+                    return { unique: false, reason: 'name' };
+                }
+                // Check exact color match
+                if (entry.colors.primary === primaryHex &&
+                    entry.colors.secondary === secondaryHex &&
+                    entry.colors.accent === accentHex) {
+                    return { unique: false, reason: 'colors' };
+                }
+            }
+            return { unique: true };
+        }
+
+        // Load history on startup
+        loadPaletteHistory();
+
+        // ============================================
+        // DISPLAY RESULT
+        // ============================================
+        function displayResult(palette) {
+            showScreen('result');
+
+            const colors = [
+                { label: 'Primary', ...palette.primary },
+                { label: 'Secondary', ...palette.secondary },
+                { label: 'Accent', ...palette.accent }
+            ];
+
+            // Check uniqueness and regenerate if needed
+            let uniqueCheck = isUniquePalette(palette.name, colors);
+            let attempts = 0;
+            while (!uniqueCheck.unique && attempts < 10) {
+                console.log(`Palette not unique (${uniqueCheck.reason}), regenerating...`);
+                // Add variation to make it unique
+                if (uniqueCheck.reason === 'name') {
+                    // Regenerate name with different random seed
+                    palette.name = generatePaletteName(palette.primary.h, palette.primary.s, palette.primary.l, answers);
+                } else {
+                    // Slightly shift colors
+                    colors[0].h = (colors[0].h + 5) % 360;
+                    colors[1].h = (colors[1].h + 3) % 360;
+                    colors[2].h = (colors[2].h + 7) % 360;
+                }
+                uniqueCheck = isUniquePalette(palette.name, colors);
+                attempts++;
+            }
+
+            paletteName.textContent = palette.name;
+            narrativeText.textContent = palette.narrative;
+
+            paletteDisplay.innerHTML = '';
+
+            colors.forEach(color => {
+                const hex = hslToHex(color.h, color.s, color.l);
+                const textColor = getContrastColor(color.h, color.s, color.l);
+
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = hex;
+                swatch.style.color = textColor;
+                swatch.innerHTML = `
+                    <span class="color-label">${color.label}</span>
+                    <span class="color-hex">${hex}</span>
+                `;
+                paletteDisplay.appendChild(swatch);
+            });
+
+            // Store for save functionality
+            window.currentPalette = { palette, colors };
+
+            // Auto-save to history
+            savePaletteToHistory(palette, colors);
+        }
+
+        // ============================================
+        // SAVE PALETTE
+        // ============================================
+        function savePalette() {
+            if (!window.currentPalette) return;
+
+            const { palette, colors } = window.currentPalette;
+
+            // Create a canvas for the palette image
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = 1200;
+            canvas.height = 800;
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#FF9A56');
+            gradient.addColorStop(0.5, '#FF6B6B');
+            gradient.addColorStop(1, '#C44569');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw color swatches
+            const swatchWidth = 300;
+            const swatchHeight = 300;
+            const startX = (canvas.width - (swatchWidth * 3 + 60)) / 2;
+            const startY = 280;
+
+            colors.forEach((color, i) => {
+                const hex = hslToHex(color.h, color.s, color.l);
+                const x = startX + i * (swatchWidth + 30);
+
+                // Draw swatch
+                ctx.fillStyle = hex;
+                ctx.beginPath();
+                ctx.roundRect(x, startY, swatchWidth, swatchHeight, 20);
+                ctx.fill();
+
+                // Draw label
+                const textColor = getContrastColor(color.h, color.s, color.l);
+                ctx.fillStyle = textColor;
+                ctx.font = '500 16px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(color.label.toUpperCase(), x + swatchWidth / 2, startY + swatchHeight - 50);
+
+                ctx.font = '600 20px Monaco, monospace';
+                ctx.fillText(hex, x + swatchWidth / 2, startY + swatchHeight - 25);
+            });
+
+            // Draw title
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '600 48px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(palette.name, canvas.width / 2, 120);
+
+            ctx.font = '400 20px Inter, sans-serif';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillText('Your Chromatic Signature', canvas.width / 2, 160);
+
+            // Footer
+            ctx.font = '400 14px Inter, sans-serif';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.fillText('Generated by Chromatic Signature', canvas.width / 2, canvas.height - 40);
+
+            // Download
+            const link = document.createElement('a');
+            link.download = `chromatic-signature-${palette.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            answers = {};
+            // Reset entropy data for new session
+            entropyData = {
+                sessionStart: Date.now(),
+                questionTimings: [],
+                answerTimestamps: [],
+                shapeChoice: null,
+                shapeClickTime: null,
+                tapPosition: { x: 0.5, y: 0.5 },
+                tapTimestamp: null
+            };
+            questionStartTime = null;
+            showScreen('welcome');
+        }
+
+        // ============================================
+        // GALLERY FUNCTIONALITY
+        // ============================================
+        // Sample palettes for the gallery (generated + curated examples)
+        const samplePalettes = [
+            {
+                name: "Radiant Momentum",
+                colors: { primary: "#FF8A5B", secondary: "#FFD166", accent: "#C44569" },
+                narrative: "Your chromatic signature emerges from the intersection of expansion and constant motion. The electric stillness of your inner world manifests as subtle gradations of hue and light."
+            },
+            {
+                name: "Lunar Reverie",
+                colors: { primary: "#6B7FD7", secondary: "#A8DADC", accent: "#457B9D" },
+                narrative: "These colors were born in the space where shadow embraces mystery. There is a flowing, adapting wisdom that pulses through these tones."
+            },
+            {
+                name: "Ethereal Twilight Flow",
+                colors: { primary: "#9B72AA", secondary: "#D4A5C9", accent: "#5D5C61" },
+                narrative: "Your palette speaks the language of adaptation and depth. Each color carries the weight of your contemplations, gathering inward toward essential truth."
+            },
+            {
+                name: "Ember Resonance",
+                colors: { primary: "#E07A5F", secondary: "#F2CC8F", accent: "#81B29A" },
+                narrative: "Your chromatic signature emerges from the intersection of expansion and eternal form. There is a rising, consuming energy that pulses through these tones."
+            },
+            {
+                name: "Crystalline Stillness",
+                colors: { primary: "#84A9AC", secondary: "#CAE8D5", accent: "#3B6978" },
+                narrative: "These colors were born in the space where illumination meets warmth. The velvet darkness of your inner world manifests as subtle gradations of hue and light."
+            },
+            {
+                name: "Soft Golden Pulse",
+                colors: { primary: "#F4A261", secondary: "#E9C46A", accent: "#2A9D8F" },
+                narrative: "Your palette speaks the language of transformation and ascension. Each color carries the weight of your contemplations, reaching outward toward infinite possibility."
+            },
+            {
+                name: "Nocturnal Depths",
+                colors: { primary: "#264653", secondary: "#2A9D8F", accent: "#E76F51" },
+                narrative: "Your chromatic signature emerges from the intersection of introspection and constant motion. There is a flowing, adapting wisdom that pulses through these tones."
+            },
+            {
+                name: "Prismatic Aurora",
+                colors: { primary: "#FF6B6B", secondary: "#FFE66D", accent: "#4ECDC4" },
+                narrative: "These colors were born in the space where illumination meets warmth. The electric stillness of your inner world manifests as subtle gradations of hue and light."
+            },
+            {
+                name: "Veiled Coral Mist",
+                colors: { primary: "#F49D6E", secondary: "#FADCD9", accent: "#7C7C7C" },
+                narrative: "Your palette speaks the language of adaptation and depth. Each color carries the weight of your contemplations, gathering inward toward essential truth."
+            },
+            {
+                name: "Glacial Meditation",
+                colors: { primary: "#A8D0E6", secondary: "#F8E9A1", accent: "#374785" },
+                narrative: "Your chromatic signature emerges from the intersection of introspection and eternal form. There is a peaceful, adapting wisdom that pulses through these tones."
+            },
+            {
+                name: "Burning Ascension",
+                colors: { primary: "#FF5E5B", secondary: "#FFED66", accent: "#00CECB" },
+                narrative: "These colors were born in the space where illumination meets warmth. There is a rising, consuming energy that pulses through these tones."
+            },
+            {
+                name: "Phantom Current",
+                colors: { primary: "#7B68EE", secondary: "#98D8C8", accent: "#F06292" },
+                narrative: "Your palette speaks the language of transformation and ascension. The velvet darkness of your inner world manifests as subtle gradations of hue and light."
+            }
+        ];
+
+        function getContrastForHex(hex) {
+            // Convert hex to RGB
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            // Calculate luminance
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            return luminance > 0.5 ? '#1A1A2E' : '#FFFFFF';
+        }
+
+        function buildGallery() {
+            galleryTrack.innerHTML = '';
+
+            // Combine sample palettes with user's history
+            const allPalettes = [...samplePalettes];
+
+            // Add user's palette history
+            paletteHistory.forEach(entry => {
+                allPalettes.push({
+                    name: entry.name,
+                    colors: entry.colors,
+                    narrative: entry.narrative
+                });
+            });
+
+            // Duplicate for seamless infinite scroll
+            const displayPalettes = [...allPalettes, ...allPalettes];
+
+            displayPalettes.forEach(palette => {
+                const card = document.createElement('div');
+                card.className = 'gallery-card';
+
+                const name = document.createElement('div');
+                name.className = 'gallery-card-name';
+                name.textContent = palette.name;
+
+                const colors = document.createElement('div');
+                colors.className = 'gallery-card-colors';
+
+                ['primary', 'secondary', 'accent'].forEach(type => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'gallery-color-swatch';
+                    swatch.style.backgroundColor = palette.colors[type];
+                    swatch.style.color = getContrastForHex(palette.colors[type]);
+                    swatch.textContent = palette.colors[type];
+                    colors.appendChild(swatch);
+                });
+
+                const narrative = document.createElement('div');
+                narrative.className = 'gallery-card-narrative';
+                narrative.textContent = palette.narrative;
+
+                card.appendChild(name);
+                card.appendChild(colors);
+                card.appendChild(narrative);
+                galleryTrack.appendChild(card);
+            });
+
+            // Calculate animation duration based on content
+            const cardWidth = 280 + 32; // card width + gap
+            const totalWidth = cardWidth * allPalettes.length;
+            const speed = 50; // pixels per second
+            const duration = totalWidth / speed;
+            galleryTrack.style.animationDuration = `${duration}s`;
+        }
+
+        function showGallery() {
+            buildGallery();
+            showScreen('gallery');
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        startBtn.addEventListener('click', () => {
+            showScreen('question');
+            displayQuestion(0);
+        });
+
+        // Start brown noise ambient sound on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Small delay to ensure smooth page load
+            setTimeout(() => {
+                initAudio().then(() => fadeInAudio());
+            }, 500);
+        });
+
+        // Also trigger on first user interaction if AudioContext was suspended
+        document.addEventListener('click', function initOnFirstClick() {
+            if (!isAudioPlaying) {
+                if (!audioContext) {
+                    initAudio().then(() => fadeInAudio());
+                } else if (audioContext.state === 'suspended') {
+                    audioContext.resume().then(() => fadeInAudio());
+                }
+            }
+            // Remove this listener after first click
+            document.removeEventListener('click', initOnFirstClick);
+        }, { once: true });
+
+        saveBtn.addEventListener('click', savePalette);
+        restartBtn.addEventListener('click', restart);
+        audioControl.addEventListener('click', toggleAudio);
+        galleryBtn.addEventListener('click', showGallery);
+        galleryBackBtn.addEventListener('click', () => showScreen('result'));
+
+        // Shape selection listeners
+        shapeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const shape = option.dataset.shape;
+                selectShape(shape);
+            });
+        });
+
+        // Tap canvas listener
+        tapContainer.addEventListener('click', handleTapCanvas);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            // 'M' key toggles audio from anywhere
+            if (e.key === 'm' || e.key === 'M') {
+                toggleAudio();
+                return;
+            }
+
+            if (screens.question.classList.contains('active')) {
+                if (e.key === '1' || e.key === 'a' || e.key === 'A') {
+                    const question = questions[currentQuestion];
+                    selectAnswer(question.id, 'A');
+                } else if (e.key === '2' || e.key === 'b' || e.key === 'B') {
+                    const question = questions[currentQuestion];
+                    selectAnswer(question.id, 'B');
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
