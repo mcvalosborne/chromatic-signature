@@ -32,8 +32,10 @@
             --text-light: #3A3A4E;
             --text-light-muted: rgba(58, 58, 78, 0.75);
 
-            /* Accent */
-            --accent-glow: #A09890;
+            /* Accent - Soft Pastel Lilac */
+            --accent-glow: #C8BFD4;
+            --accent-lilac: #D4CCE0;
+            --accent-lilac-light: #E8E3F0;
             --accent-success: #7AB87F;
 
             /* Typography */
@@ -226,13 +228,13 @@
         .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #B8AFA8, #A09890);
+            background: linear-gradient(135deg, var(--accent-lilac-light), var(--accent-lilac));
             border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(180, 170, 200, 0.25);
             animation: pulse 3s ease-in-out infinite;
         }
 
@@ -246,11 +248,11 @@
 
             0%,
             100% {
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 8px 24px rgba(180, 170, 200, 0.25);
             }
 
             50% {
-                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+                box-shadow: 0 12px 32px rgba(180, 170, 200, 0.4);
             }
         }
 
@@ -340,7 +342,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-glow), #B8AFA8);
+            background: linear-gradient(90deg, var(--accent-lilac), var(--accent-glow));
             border-radius: 100px;
             transition: width var(--transition-smooth);
         }
@@ -477,7 +479,7 @@
             height: 80%;
             top: 10%;
             left: 10%;
-            border-top-color: #B8AFA8;
+            border-top-color: var(--accent-lilac);
             animation-duration: 2s;
             animation-direction: reverse;
         }
@@ -487,7 +489,7 @@
             height: 60%;
             top: 20%;
             left: 20%;
-            border-top-color: #C44569;
+            border-top-color: var(--accent-lilac-light);
             animation-duration: 2.5s;
         }
 
@@ -508,6 +510,41 @@
            ============================================ */
         .result-screen .glass-panel {
             padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle rotating mandala pattern overlay */
+        .pattern-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140%;
+            height: 140%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.04;
+            z-index: 0;
+            animation: rotatePattern 120s linear infinite;
+        }
+
+        .pattern-overlay svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes rotatePattern {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .result-screen .glass-panel > *:not(.pattern-overlay) {
+            position: relative;
+            z-index: 1;
         }
 
         .result-header {
@@ -604,13 +641,13 @@
         }
 
         .action-button.primary {
-            background: linear-gradient(135deg, var(--accent-glow), #B8AFA8);
+            background: linear-gradient(135deg, var(--accent-lilac), var(--accent-glow));
             color: var(--text-primary);
         }
 
         .action-button.primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 24px rgba(180, 170, 200, 0.35);
         }
 
         .action-button.secondary {
@@ -841,7 +878,7 @@
         .tap-ripple {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(160, 152, 144, 0.5) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(200, 191, 212, 0.6) 0%, transparent 70%);
             pointer-events: none;
             animation: rippleExpand 0.8s ease-out forwards;
         }
@@ -893,8 +930,8 @@
 
         .shape-option {
             aspect-ratio: 1;
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(212, 204, 224, 0.15);
+            border: 2px solid rgba(200, 191, 212, 0.3);
             border-radius: 20px;
             cursor: pointer;
             transition: all var(--transition-fast);
@@ -905,8 +942,8 @@
         }
 
         .shape-option:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(212, 204, 224, 0.3);
+            border-color: rgba(200, 191, 212, 0.5);
             transform: scale(1.05);
         }
 
@@ -1230,6 +1267,37 @@
         <!-- RESULT SCREEN -->
         <div id="result-screen" class="screen result-screen">
             <div class="glass-panel">
+                <!-- Subtle rotating mandala pattern -->
+                <div class="pattern-overlay">
+                    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="mandala" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                                <g fill="none" stroke="currentColor" stroke-width="0.5">
+                                    <!-- Petal layer 1 -->
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(45 50 50)" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(90 50 50)" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(135 50 50)" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(180 50 50)" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(225 50 50)" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(270 50 50)" />
+                                    <path d="M50 10 Q60 30 50 50 Q40 30 50 10" transform="rotate(315 50 50)" />
+                                    <!-- Inner circles -->
+                                    <circle cx="50" cy="50" r="8" />
+                                    <circle cx="50" cy="50" r="15" />
+                                    <circle cx="50" cy="50" r="25" />
+                                    <!-- Outer arcs -->
+                                    <path d="M50 5 A45 45 0 0 1 95 50" />
+                                    <path d="M95 50 A45 45 0 0 1 50 95" />
+                                    <path d="M50 95 A45 45 0 0 1 5 50" />
+                                    <path d="M5 50 A45 45 0 0 1 50 5" />
+                                </g>
+                            </pattern>
+                        </defs>
+                        <rect width="400" height="400" fill="url(#mandala)" />
+                    </svg>
+                </div>
+
                 <div class="result-header">
                     <h2 class="result-title" id="palette-name">Your Chromatic Signature</h2>
                     <p class="result-subtitle">A palette born from your inner narrative</p>
@@ -2097,7 +2165,7 @@
             const ctx = tapCanvas.getContext('2d');
             ctx.beginPath();
             ctx.arc(x * tapCanvas.width, y * tapCanvas.height, 8, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(160, 152, 144, 0.8)';
+            ctx.fillStyle = 'rgba(200, 191, 212, 0.85)';
             ctx.fill();
 
             playClickSound();
