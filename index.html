@@ -15,26 +15,26 @@
            CSS CUSTOM PROPERTIES
            ============================================ */
         :root {
-            /* Warm Gradient Background */
-            --bg-start: #FF9A56;
-            --bg-mid: #FF6B6B;
-            --bg-end: #C44569;
+            /* Calm Ethereal Gradient Background */
+            --bg-start: #E8E4E1;
+            --bg-mid: #D4CFC9;
+            --bg-end: #C8C2BC;
 
             /* Glass Panel */
-            --glass-bg: rgba(255, 255, 255, 0.12);
-            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-bg: rgba(255, 255, 255, 0.35);
+            --glass-border: rgba(255, 255, 255, 0.5);
             --glass-blur: 24px;
-            --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 
             /* Text */
-            --text-primary: #1A1A2E;
-            --text-secondary: rgba(26, 26, 46, 0.7);
-            --text-light: #FFFFFF;
-            --text-light-muted: rgba(255, 255, 255, 0.85);
+            --text-primary: #3A3A4E;
+            --text-secondary: rgba(58, 58, 78, 0.7);
+            --text-light: #3A3A4E;
+            --text-light-muted: rgba(58, 58, 78, 0.75);
 
             /* Accent */
-            --accent-glow: #FFD93D;
-            --accent-success: #6BCB77;
+            --accent-glow: #A09890;
+            --accent-success: #7AB87F;
 
             /* Typography */
             --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -104,7 +104,7 @@
         .mesh-blob:nth-child(1) {
             width: 60vw;
             height: 60vw;
-            background: radial-gradient(circle, #FFB347 0%, transparent 70%);
+            background: radial-gradient(circle, #E8DFD8 0%, transparent 70%);
             top: -20%;
             left: -20%;
             animation-delay: 0s;
@@ -113,7 +113,7 @@
         .mesh-blob:nth-child(2) {
             width: 50vw;
             height: 50vw;
-            background: radial-gradient(circle, #FF6B6B 0%, transparent 70%);
+            background: radial-gradient(circle, #D8D2CC 0%, transparent 70%);
             bottom: -10%;
             right: -15%;
             animation-delay: -7s;
@@ -122,7 +122,7 @@
         .mesh-blob:nth-child(3) {
             width: 40vw;
             height: 40vw;
-            background: radial-gradient(circle, #C44569 0%, transparent 70%);
+            background: radial-gradient(circle, #C9C4BE 0%, transparent 70%);
             top: 40%;
             left: 50%;
             animation-delay: -14s;
@@ -226,13 +226,13 @@
         .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--accent-glow), #FF9A56);
+            background: linear-gradient(135deg, #B8AFA8, #A09890);
             border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto;
-            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             animation: pulse 3s ease-in-out infinite;
         }
 
@@ -246,11 +246,11 @@
 
             0%,
             100% {
-                box-shadow: 0 8px 24px rgba(255, 217, 61, 0.3);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
             }
 
             50% {
-                box-shadow: 0 12px 32px rgba(255, 217, 61, 0.5);
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
             }
         }
 
@@ -340,7 +340,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-glow), #FF9A56);
+            background: linear-gradient(90deg, var(--accent-glow), #B8AFA8);
             border-radius: 100px;
             transition: width var(--transition-smooth);
         }
@@ -477,7 +477,7 @@
             height: 80%;
             top: 10%;
             left: 10%;
-            border-top-color: #FF9A56;
+            border-top-color: #B8AFA8;
             animation-duration: 2s;
             animation-direction: reverse;
         }
@@ -604,18 +604,18 @@
         }
 
         .action-button.primary {
-            background: linear-gradient(135deg, var(--accent-glow), #FF9A56);
+            background: linear-gradient(135deg, var(--accent-glow), #B8AFA8);
             color: var(--text-primary);
         }
 
         .action-button.primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
 
         .action-button.secondary {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: var(--text-light);
         }
 
@@ -841,7 +841,7 @@
         .tap-ripple {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 217, 61, 0.6) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(160, 152, 144, 0.5) 0%, transparent 70%);
             pointer-events: none;
             animation: rippleExpand 0.8s ease-out forwards;
         }
@@ -1377,6 +1377,56 @@
             waterNouns: ['Current', 'Tide', 'Depths', 'Flow', 'Mist']
         };
 
+        // ============================================
+        // PRESET COLOR GROUPS
+        // ============================================
+        const presetGroups = {
+            // Group 1 (Preset 1-4): Softer, muted tones - 2 colors
+            group1: [
+                '#FFA3B8', '#9152AD', '#CBBEE7', '#8C93DA', '#E1E1DF',
+                '#7EC8E3', '#D23D7E', '#FFC86D', '#B6D1E1', '#799EE2'
+            ],
+            // Group 2 (Preset 5-9): Natural/earthy tones - 3 colors
+            group2: [
+                '#DABF9D', '#41BB8B', '#3F885B', '#C8DEC1', '#EBAF7B',
+                '#788861', '#30AAAB', '#F99BBB', '#83DB2B', '#93D0C7'
+            ],
+            // Group 3 (Preset 10-15): Warm/bold tones - 4 colors
+            group3: [
+                '#FFFFFF', '#D67082', '#FF5D37', '#EBA893', '#FCE1CF',
+                '#E6894D', '#FDBD5A', '#FC8FB6', '#B44051', '#928FC2'
+            ]
+        };
+
+        // Helper function to convert hex to HSL
+        function hexToHsl(hex) {
+            // Remove # if present
+            hex = hex.replace(/^#/, '');
+
+            // Parse RGB values
+            const r = parseInt(hex.substring(0, 2), 16) / 255;
+            const g = parseInt(hex.substring(2, 4), 16) / 255;
+            const b = parseInt(hex.substring(4, 6), 16) / 255;
+
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+
+            return { h: h * 360, s: s * 100, l: l * 100 };
+        }
+
         function generatePaletteName(hue, saturation, lightness, answers) {
             // Select adjective based on hue (warm vs cool)
             const isWarm = (hue >= 0 && hue < 60) || (hue >= 300 && hue <= 360);
@@ -1559,11 +1609,11 @@
                 // Life and fade - slightly faster decay for more ethereal feel
                 this.life = 1;
                 this.decay = 0.02 + Math.random() * 0.015;
-                // Color - warm golden tones, slightly more subtle
-                this.hue = 35 + Math.random() * 25;  // Gold to soft orange
-                this.saturation = 70 + Math.random() * 20;
-                this.lightness = 65 + Math.random() * 20;
-                this.alpha = 0.4 + Math.random() * 0.3;
+                // Color - soft muted tones for ethereal feel
+                this.hue = 25 + Math.random() * 30;  // Soft warm to neutral
+                this.saturation = 15 + Math.random() * 25;  // More muted
+                this.lightness = 70 + Math.random() * 18;  // Lighter
+                this.alpha = 0.2 + Math.random() * 0.2;  // More subtle
             }
 
             update() {
@@ -2047,7 +2097,7 @@
             const ctx = tapCanvas.getContext('2d');
             ctx.beginPath();
             ctx.arc(x * tapCanvas.width, y * tapCanvas.height, 8, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 217, 61, 0.8)';
+            ctx.fillStyle = 'rgba(160, 152, 144, 0.8)';
             ctx.fill();
 
             playClickSound();
@@ -2070,10 +2120,10 @@
         }
 
         // ============================================
-        // INFINITE PALETTE GENERATION
+        // PRESET-BASED PALETTE GENERATION
         // ============================================
         function generatePalette(answers) {
-            // Build comprehensive entropy seed from all collected data
+            // Build entropy seed from all collected data
             const timingSum = entropyData.questionTimings.reduce((a, b) => a + b, 0);
             const timestampEntropy = entropyData.answerTimestamps.reduce((a, b) => a + (b % 10000), 0);
             const tapEntropy = (entropyData.tapPosition.x * 1000) + (entropyData.tapPosition.y * 7777);
@@ -2088,139 +2138,84 @@
                 return x - Math.floor(x);
             };
 
-            // Base values influenced by answers with continuous variation
-            let hue = 30;  // Start warm
-            let saturation = 50;
-            let lightness = 65;
+            // ============================================
+            // DETERMINE PRESET GROUP BASED ON QUIZ ANSWERS
+            // ============================================
+            // Score each answer: A = +1, B = -1
+            let energyScore = 0;
+            energyScore += answers.q1 === 'A' ? 1 : -1;  // Expanding vs Contracting
+            energyScore += answers.q2 === 'A' ? 1 : -1;  // River vs Sculpture
+            energyScore += answers.q3 === 'A' ? 1 : -1;  // Electric vs Velvet
+            energyScore += answers.q4 === 'A' ? 1 : -1;  // Light vs Shadow
+            energyScore += answers.q5 === 'A' ? 1 : -1;  // Fire vs Water
 
-            // Apply tap position influence (major randomization factor)
-            // X position affects hue rotation (0-360 degree range)
-            hue += entropyData.tapPosition.x * 120;
-            // Y position affects saturation (-15 to +15)
-            saturation += (entropyData.tapPosition.y - 0.5) * 30;
-
-            // Apply shape choice influence
-            if (entropyData.shapeChoice === 'spiral') {
-                hue += 15; // Warmer, dynamic
-                saturation += 8;
-            } else if (entropyData.shapeChoice === 'waves') {
-                hue += 180; // Cooler, flowing
-                lightness += 5;
-            } else if (entropyData.shapeChoice === 'crystal') {
-                saturation -= 10; // More muted, structured
-                lightness += 8;
-            } else if (entropyData.shapeChoice === 'nebula') {
-                hue += 270; // Purple/cosmic range
-                saturation += 5;
-            }
-
-            // Apply timing influence (faster = more saturated, slower = more muted)
-            const avgTiming = timingSum / Math.max(1, entropyData.questionTimings.length);
-            const timingFactor = Math.min(1, avgTiming / 10000); // Normalize to 0-1 over 10 seconds
-            saturation += (0.5 - timingFactor) * 15; // Fast answers = higher saturation
-
-            // Q1: Consciousness shape → Hue range + saturation
-            // Expanding = broader hue range, higher saturation
-            if (answers.q1 === 'A') {
-                hue += pseudoRandom(1) * 60;  // Shift toward orange/red
-                saturation += 10 + pseudoRandom(2) * 15;
+            // Determine group: -5 to -2 = group1, -1 to +1 = group2, +2 to +5 = group3
+            let selectedGroup, colorCount;
+            if (energyScore <= -2) {
+                selectedGroup = presetGroups.group1;
+                colorCount = 2;
+            } else if (energyScore >= 2) {
+                selectedGroup = presetGroups.group3;
+                colorCount = 4;
             } else {
-                hue += 180 + pseudoRandom(1) * 60;  // Shift toward blue/purple
-                saturation -= 5 + pseudoRandom(2) * 10;
+                selectedGroup = presetGroups.group2;
+                colorCount = 3;
             }
 
-            // Q2: Time perception → Lightness dynamics
-            // River = variable lightness, Sculpture = stable lightness
-            if (answers.q2 === 'A') {
-                lightness += (pseudoRandom(3) - 0.5) * 20;
-            } else {
-                lightness += 5;  // Slightly brighter, more stable
+            // ============================================
+            // SELECT COLORS FROM THE CHOSEN GROUP
+            // ============================================
+            // Use entropy to select which colors from the group
+            const shuffledIndices = [];
+            for (let i = 0; i < selectedGroup.length; i++) {
+                shuffledIndices.push(i);
+            }
+            // Fisher-Yates shuffle using our pseudo-random
+            for (let i = shuffledIndices.length - 1; i > 0; i--) {
+                const j = Math.floor(pseudoRandom(i * 100) * (i + 1));
+                [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
             }
 
-            // Q3: Silence quality → Saturation + hue micro-shift
-            // Electric = higher contrast, Velvet = softer tones
-            if (answers.q3 === 'A') {
-                saturation += 8 + pseudoRandom(4) * 10;
-                hue += pseudoRandom(5) * 15;
-            } else {
-                saturation -= 5;
-                lightness -= 8 + pseudoRandom(4) * 5;
+            // Pick the first N colors based on colorCount
+            const selectedColors = [];
+            for (let i = 0; i < colorCount; i++) {
+                const hexColor = selectedGroup[shuffledIndices[i]];
+                const hslColor = hexToHsl(hexColor);
+
+                // Apply subtle variations (±8 on each HSL component) for uniqueness
+                const hVariation = (pseudoRandom(i * 3) - 0.5) * 16;
+                const sVariation = (pseudoRandom(i * 3 + 1) - 0.5) * 12;
+                const lVariation = (pseudoRandom(i * 3 + 2) - 0.5) * 10;
+
+                // Add tap position influence for extra uniqueness
+                const tapHue = (entropyData.tapPosition.x - 0.5) * 8;
+                const tapSat = (entropyData.tapPosition.y - 0.5) * 6;
+
+                selectedColors.push({
+                    h: ((hslColor.h + hVariation + tapHue) % 360 + 360) % 360,
+                    s: Math.max(15, Math.min(90, hslColor.s + sVariation + tapSat)),
+                    l: Math.max(30, Math.min(90, hslColor.l + lVariation))
+                });
             }
 
-            // Q4: Truth as light/shadow → Primary hue direction
-            // Light = warm shift, Shadow = cool shift
-            if (answers.q4 === 'A') {
-                hue = (hue + 330) % 360;  // Warm rotation
-                lightness += 10 + pseudoRandom(6) * 8;
-            } else {
-                hue = (hue + 200) % 360;  // Cool rotation
-                lightness -= 5 + pseudoRandom(6) * 8;
-            }
+            // Assign colors to palette slots
+            const primary = selectedColors[0];
+            const secondary = selectedColors[1] || selectedColors[0];
+            const accent = selectedColors[2] || selectedColors[1] || selectedColors[0];
+            const fourth = selectedColors[3] || null;
 
-            // Q5: Soul texture (fire/water) → Harmony type & accent intensity
-            const harmonyType = answers.q5 === 'A' ? 'triadic' : 'analogous';
-            if (answers.q5 === 'A') {
-                saturation += pseudoRandom(7) * 12;
-            } else {
-                saturation -= pseudoRandom(7) * 8;
-            }
+            // Determine harmony type based on colorCount
+            const harmonyType = colorCount === 2 ? 'duo' : (colorCount === 3 ? 'trio' : 'quartet');
 
-            // Normalize hue and clamp other values
-            hue = ((hue % 360) + 360) % 360;
-            saturation = Math.max(30, Math.min(80, saturation));
-            lightness = Math.max(45, Math.min(85, lightness));
-
-            // Add final micro-variations using all entropy for true uniqueness
-            hue += (pseudoRandom(8) - 0.5) * 20 + (entropyData.tapPosition.x - 0.5) * 15;
-            saturation += (pseudoRandom(9) - 0.5) * 10 + (entropyData.tapPosition.y - 0.5) * 8;
-            lightness += (pseudoRandom(10) - 0.5) * 8;
-
-            // Re-clamp after micro-variations
-            hue = ((hue % 360) + 360) % 360;
-            saturation = Math.max(25, Math.min(85, saturation));
-            lightness = Math.max(40, Math.min(88, lightness));
-
-            // Generate primary color
-            const primary = { h: hue, s: saturation, l: lightness };
-            let secondary, accent;
-
-            // Generate harmonious palette based on type
-            if (harmonyType === 'triadic') {
-                // Triadic: 120° apart with variations
-                secondary = {
-                    h: (hue + 120 + (pseudoRandom(11) - 0.5) * 20 + entropyData.tapPosition.x * 10) % 360,
-                    s: Math.max(25, saturation - 10 + pseudoRandom(12) * 8),
-                    l: Math.min(90, lightness + 8 + pseudoRandom(13) * 6)
-                };
-                accent = {
-                    h: (hue + 240 + (pseudoRandom(14) - 0.5) * 20 + entropyData.tapPosition.y * 10) % 360,
-                    s: Math.min(80, saturation + 5 + pseudoRandom(15) * 10),
-                    l: Math.max(40, lightness - 12 + pseudoRandom(16) * 8)
-                };
-            } else {
-                // Analogous: 25-35° apart for harmony
-                const spread = 25 + pseudoRandom(11) * 15 + entropyData.tapPosition.x * 10;
-                secondary = {
-                    h: (hue + spread) % 360,
-                    s: Math.max(20, saturation - 12 + pseudoRandom(12) * 6),
-                    l: Math.min(92, lightness + 10 + pseudoRandom(13) * 8)
-                };
-                accent = {
-                    h: (hue - spread + 360) % 360,
-                    s: Math.min(75, saturation + 8 + pseudoRandom(14) * 6),
-                    l: Math.max(42, lightness - 10 + pseudoRandom(15) * 6)
-                };
-            }
-
-            // Generate unique palette name
-            const name = generatePaletteName(hue, saturation, lightness, answers);
+            // Generate unique palette name using primary color's HSL
+            const name = generatePaletteName(primary.h, primary.s, primary.l, answers);
 
             // Generate unique palette ID (for sharing)
             const paletteId = btoa(JSON.stringify({
-                h: Math.round(hue),
-                s: Math.round(saturation),
-                l: Math.round(lightness),
-                t: harmonyType[0]
+                h: Math.round(primary.h),
+                s: Math.round(primary.s),
+                l: Math.round(primary.l),
+                c: colorCount
             })).slice(0, 8);
 
             // Build the palette object
@@ -2228,6 +2223,8 @@
                 primary,
                 secondary,
                 accent,
+                fourth,
+                colorCount,
                 name,
                 harmonyType,
                 paletteId
@@ -2273,20 +2270,32 @@
 
         // Save palette to history and download JSON
         function savePaletteToHistory(palette, colors) {
+            // Build colors object dynamically based on color count
+            const colorsHex = {
+                primary: hslToHex(colors[0].h, colors[0].s, colors[0].l),
+                secondary: hslToHex(colors[1].h, colors[1].s, colors[1].l)
+            };
+            const hslData = {
+                primary: { h: Math.round(colors[0].h), s: Math.round(colors[0].s), l: Math.round(colors[0].l) },
+                secondary: { h: Math.round(colors[1].h), s: Math.round(colors[1].s), l: Math.round(colors[1].l) }
+            };
+
+            if (colors[2]) {
+                colorsHex.accent = hslToHex(colors[2].h, colors[2].s, colors[2].l);
+                hslData.accent = { h: Math.round(colors[2].h), s: Math.round(colors[2].s), l: Math.round(colors[2].l) };
+            }
+            if (colors[3]) {
+                colorsHex.highlight = hslToHex(colors[3].h, colors[3].s, colors[3].l);
+                hslData.highlight = { h: Math.round(colors[3].h), s: Math.round(colors[3].s), l: Math.round(colors[3].l) };
+            }
+
             const entry = {
                 id: palette.paletteId,
                 name: palette.name,
                 timestamp: new Date().toISOString(),
-                colors: {
-                    primary: hslToHex(colors[0].h, colors[0].s, colors[0].l),
-                    secondary: hslToHex(colors[1].h, colors[1].s, colors[1].l),
-                    accent: hslToHex(colors[2].h, colors[2].s, colors[2].l)
-                },
-                hsl: {
-                    primary: { h: Math.round(colors[0].h), s: Math.round(colors[0].s), l: Math.round(colors[0].l) },
-                    secondary: { h: Math.round(colors[1].h), s: Math.round(colors[1].s), l: Math.round(colors[1].l) },
-                    accent: { h: Math.round(colors[2].h), s: Math.round(colors[2].s), l: Math.round(colors[2].l) }
-                },
+                colorCount: palette.colorCount || colors.length,
+                colors: colorsHex,
+                hsl: hslData,
                 harmonyType: palette.harmonyType,
                 narrative: palette.narrative
             };
@@ -2325,20 +2334,25 @@
 
         // Check if name or colors already exist
         function isUniquePalette(name, colors) {
-            const primaryHex = hslToHex(colors[0].h, colors[0].s, colors[0].l);
-            const secondaryHex = hslToHex(colors[1].h, colors[1].s, colors[1].l);
-            const accentHex = hslToHex(colors[2].h, colors[2].s, colors[2].l);
+            // Build hex array from colors
+            const hexColors = colors.map(c => hslToHex(c.h, c.s, c.l));
 
             for (const entry of paletteHistory) {
                 // Check name
                 if (entry.name === name) {
                     return { unique: false, reason: 'name' };
                 }
-                // Check exact color match
-                if (entry.colors.primary === primaryHex &&
-                    entry.colors.secondary === secondaryHex &&
-                    entry.colors.accent === accentHex) {
-                    return { unique: false, reason: 'colors' };
+                // Check exact color match (compare first two colors at minimum)
+                if (entry.colors.primary === hexColors[0] &&
+                    entry.colors.secondary === hexColors[1]) {
+                    // Also check accent if both have it
+                    if (hexColors[2] && entry.colors.accent && entry.colors.accent === hexColors[2]) {
+                        return { unique: false, reason: 'colors' };
+                    }
+                    // If neither has accent, it's still a match
+                    if (!hexColors[2] && !entry.colors.accent) {
+                        return { unique: false, reason: 'colors' };
+                    }
                 }
             }
             return { unique: true };
@@ -2353,11 +2367,21 @@
         function displayResult(palette) {
             showScreen('result');
 
+            // Build colors array based on colorCount
             const colors = [
                 { label: 'Primary', ...palette.primary },
-                { label: 'Secondary', ...palette.secondary },
-                { label: 'Accent', ...palette.accent }
+                { label: 'Secondary', ...palette.secondary }
             ];
+
+            // Add third color if colorCount >= 3
+            if (palette.colorCount >= 3) {
+                colors.push({ label: 'Accent', ...palette.accent });
+            }
+
+            // Add fourth color if colorCount === 4
+            if (palette.colorCount === 4 && palette.fourth) {
+                colors.push({ label: 'Highlight', ...palette.fourth });
+            }
 
             // Check uniqueness and regenerate if needed
             let uniqueCheck = isUniquePalette(palette.name, colors);
@@ -2369,10 +2393,10 @@
                     // Regenerate name with different random seed
                     palette.name = generatePaletteName(palette.primary.h, palette.primary.s, palette.primary.l, answers);
                 } else {
-                    // Slightly shift colors
-                    colors[0].h = (colors[0].h + 5) % 360;
-                    colors[1].h = (colors[1].h + 3) % 360;
-                    colors[2].h = (colors[2].h + 7) % 360;
+                    // Slightly shift colors (handle variable number of colors)
+                    colors.forEach((color, i) => {
+                        color.h = (color.h + 3 + i * 2) % 360;
+                    });
                 }
                 uniqueCheck = isUniquePalette(palette.name, colors);
                 attempts++;
@@ -2420,23 +2444,26 @@
             canvas.width = 1200;
             canvas.height = 800;
 
-            // Background gradient
+            // Background gradient (calm ethereal colors)
             const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#FF9A56');
-            gradient.addColorStop(0.5, '#FF6B6B');
-            gradient.addColorStop(1, '#C44569');
+            gradient.addColorStop(0, '#E8E4E1');
+            gradient.addColorStop(0.5, '#D4CFC9');
+            gradient.addColorStop(1, '#C8C2BC');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw color swatches
-            const swatchWidth = 300;
+            // Draw color swatches (dynamically sized based on color count)
+            const numColors = colors.length;
+            const gap = 30;
+            const totalGapWidth = (numColors - 1) * gap;
+            const swatchWidth = Math.min(280, (canvas.width - 200 - totalGapWidth) / numColors);
             const swatchHeight = 300;
-            const startX = (canvas.width - (swatchWidth * 3 + 60)) / 2;
+            const startX = (canvas.width - (swatchWidth * numColors + totalGapWidth)) / 2;
             const startY = 280;
 
             colors.forEach((color, i) => {
                 const hex = hslToHex(color.h, color.s, color.l);
-                const x = startX + i * (swatchWidth + 30);
+                const x = startX + i * (swatchWidth + gap);
 
                 // Draw swatch
                 ctx.fillStyle = hex;
@@ -2455,19 +2482,19 @@
                 ctx.fillText(hex, x + swatchWidth / 2, startY + swatchHeight - 25);
             });
 
-            // Draw title
-            ctx.fillStyle = '#FFFFFF';
+            // Draw title (dark text for light background)
+            ctx.fillStyle = '#3A3A4E';
             ctx.font = '600 48px Inter, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(palette.name, canvas.width / 2, 120);
 
             ctx.font = '400 20px Inter, sans-serif';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fillStyle = 'rgba(58, 58, 78, 0.8)';
             ctx.fillText('Your Chromatic Signature', canvas.width / 2, 160);
 
             // Footer
             ctx.font = '400 14px Inter, sans-serif';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.fillStyle = 'rgba(58, 58, 78, 0.6)';
             ctx.fillText('Generated by Chromatic Signature', canvas.width / 2, canvas.height - 40);
 
             // Download
@@ -2497,67 +2524,82 @@
         // ============================================
         // GALLERY FUNCTIONALITY
         // ============================================
-        // Sample palettes for the gallery (generated + curated examples)
+        // Sample palettes for the gallery (using preset group colors)
         const samplePalettes = [
-            {
-                name: "Radiant Momentum",
-                colors: { primary: "#FF8A5B", secondary: "#FFD166", accent: "#C44569" },
-                narrative: "Your chromatic signature emerges from the intersection of expansion and constant motion. The electric stillness of your inner world manifests as subtle gradations of hue and light."
-            },
+            // Group 1 examples (2 colors - cool/muted)
             {
                 name: "Lunar Reverie",
-                colors: { primary: "#6B7FD7", secondary: "#A8DADC", accent: "#457B9D" },
+                colors: { primary: "#9152AD", secondary: "#CBBEE7" },
+                colorCount: 2,
                 narrative: "These colors were born in the space where shadow embraces mystery. There is a flowing, adapting wisdom that pulses through these tones."
             },
             {
-                name: "Ethereal Twilight Flow",
-                colors: { primary: "#9B72AA", secondary: "#D4A5C9", accent: "#5D5C61" },
-                narrative: "Your palette speaks the language of adaptation and depth. Each color carries the weight of your contemplations, gathering inward toward essential truth."
-            },
-            {
-                name: "Ember Resonance",
-                colors: { primary: "#E07A5F", secondary: "#F2CC8F", accent: "#81B29A" },
-                narrative: "Your chromatic signature emerges from the intersection of expansion and eternal form. There is a rising, consuming energy that pulses through these tones."
-            },
-            {
                 name: "Crystalline Stillness",
-                colors: { primary: "#84A9AC", secondary: "#CAE8D5", accent: "#3B6978" },
-                narrative: "These colors were born in the space where illumination meets warmth. The velvet darkness of your inner world manifests as subtle gradations of hue and light."
+                colors: { primary: "#7EC8E3", secondary: "#B6D1E1" },
+                colorCount: 2,
+                narrative: "Your chromatic signature emerges from the intersection of introspection and eternal form. A peaceful wisdom pulses through these tones."
             },
             {
-                name: "Soft Golden Pulse",
-                colors: { primary: "#F4A261", secondary: "#E9C46A", accent: "#2A9D8F" },
-                narrative: "Your palette speaks the language of transformation and ascension. Each color carries the weight of your contemplations, reaching outward toward infinite possibility."
+                name: "Soft Raspberry Echo",
+                colors: { primary: "#FFA3B8", secondary: "#E1E1DF" },
+                colorCount: 2,
+                narrative: "Your palette speaks the language of adaptation and depth. Each color carries the weight of your contemplations."
+            },
+            // Group 2 examples (3 colors - natural/earthy)
+            {
+                name: "Forest Meditation",
+                colors: { primary: "#41BB8B", secondary: "#3F885B", accent: "#C8DEC1" },
+                colorCount: 3,
+                narrative: "Your chromatic signature emerges from the intersection of expansion and eternal form. There is a grounded energy in these tones."
             },
             {
-                name: "Nocturnal Depths",
-                colors: { primary: "#264653", secondary: "#2A9D8F", accent: "#E76F51" },
-                narrative: "Your chromatic signature emerges from the intersection of introspection and constant motion. There is a flowing, adapting wisdom that pulses through these tones."
+                name: "Earthen Warmth",
+                colors: { primary: "#DABF9D", secondary: "#EBAF7B", accent: "#788861" },
+                colorCount: 3,
+                narrative: "These colors were born in the space where illumination meets warmth. A flowing wisdom pulses through these tones."
             },
             {
-                name: "Prismatic Aurora",
-                colors: { primary: "#FF6B6B", secondary: "#FFE66D", accent: "#4ECDC4" },
-                narrative: "These colors were born in the space where illumination meets warmth. The electric stillness of your inner world manifests as subtle gradations of hue and light."
+                name: "Seafoam Dreams",
+                colors: { primary: "#30AAAB", secondary: "#93D0C7", accent: "#F99BBB" },
+                colorCount: 3,
+                narrative: "Your palette speaks the language of transformation and ascension. Each color reaches outward toward infinite possibility."
             },
             {
-                name: "Veiled Coral Mist",
-                colors: { primary: "#F49D6E", secondary: "#FADCD9", accent: "#7C7C7C" },
-                narrative: "Your palette speaks the language of adaptation and depth. Each color carries the weight of your contemplations, gathering inward toward essential truth."
+                name: "Verdant Pulse",
+                colors: { primary: "#83DB2B", secondary: "#C8DEC1", accent: "#788861" },
+                colorCount: 3,
+                narrative: "Your chromatic signature emerges from the intersection of expansion and constant motion. A rising energy pulses through these tones."
+            },
+            // Group 3 examples (4 colors - warm/bold)
+            {
+                name: "Radiant Momentum",
+                colors: { primary: "#E6894D", secondary: "#FDBD5A", accent: "#FCE1CF", highlight: "#D67082" },
+                colorCount: 4,
+                narrative: "Your chromatic signature emerges from the intersection of expansion and constant motion. The electric energy of your inner world manifests as vibrant gradations."
             },
             {
-                name: "Glacial Meditation",
-                colors: { primary: "#A8D0E6", secondary: "#F8E9A1", accent: "#374785" },
-                narrative: "Your chromatic signature emerges from the intersection of introspection and eternal form. There is a peaceful, adapting wisdom that pulses through these tones."
-            },
-            {
-                name: "Burning Ascension",
-                colors: { primary: "#FF5E5B", secondary: "#FFED66", accent: "#00CECB" },
+                name: "Coral Ascension",
+                colors: { primary: "#FF5D37", secondary: "#EBA893", accent: "#FC8FB6", highlight: "#FFFFFF" },
+                colorCount: 4,
                 narrative: "These colors were born in the space where illumination meets warmth. There is a rising, consuming energy that pulses through these tones."
             },
             {
-                name: "Phantom Current",
-                colors: { primary: "#7B68EE", secondary: "#98D8C8", accent: "#F06292" },
-                narrative: "Your palette speaks the language of transformation and ascension. The velvet darkness of your inner world manifests as subtle gradations of hue and light."
+                name: "Burgundy Dreams",
+                colors: { primary: "#B44051", secondary: "#D67082", accent: "#928FC2", highlight: "#FCE1CF" },
+                colorCount: 4,
+                narrative: "Your palette speaks the language of transformation and depth. Each color carries the weight of your contemplations."
+            },
+            {
+                name: "Golden Bloom",
+                colors: { primary: "#FDBD5A", secondary: "#E6894D", accent: "#FC8FB6", highlight: "#EBA893" },
+                colorCount: 4,
+                narrative: "Your chromatic signature emerges from the intersection of expansion and eternal form. There is a warm, nurturing energy in these tones."
+            },
+            {
+                name: "Lavender Warmth",
+                colors: { primary: "#928FC2", secondary: "#D67082", accent: "#EBA893", highlight: "#FFFFFF" },
+                colorCount: 4,
+                narrative: "These colors were born in the space where shadow embraces mystery. A gentle, adapting wisdom pulses through these tones."
             }
         ];
 
@@ -2600,13 +2642,18 @@
                 const colors = document.createElement('div');
                 colors.className = 'gallery-card-colors';
 
-                ['primary', 'secondary', 'accent'].forEach(type => {
-                    const swatch = document.createElement('div');
-                    swatch.className = 'gallery-color-swatch';
-                    swatch.style.backgroundColor = palette.colors[type];
-                    swatch.style.color = getContrastForHex(palette.colors[type]);
-                    swatch.textContent = palette.colors[type];
-                    colors.appendChild(swatch);
+                // Handle variable number of colors (2, 3, or 4)
+                const colorTypes = ['primary', 'secondary', 'accent', 'highlight'];
+                const numColors = palette.colorCount || 3;
+                colorTypes.slice(0, numColors).forEach(type => {
+                    if (palette.colors[type]) {
+                        const swatch = document.createElement('div');
+                        swatch.className = 'gallery-color-swatch';
+                        swatch.style.backgroundColor = palette.colors[type];
+                        swatch.style.color = getContrastForHex(palette.colors[type]);
+                        swatch.textContent = palette.colors[type];
+                        colors.appendChild(swatch);
+                    }
                 });
 
                 const narrative = document.createElement('div');
